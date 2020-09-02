@@ -23,39 +23,7 @@
 	function pushMsg() {
         liff.closeWindow();
 
-		/*if (item == '' || cost == '') {  //資料檢查
-            alert('每個項目都必須輸入！');
-            return;
-        }
-        
-        var msg = "分帳 ";  //回傳訊息字串
-		msg = msg + item + " ";
-        msg = msg + cost + " ";
-        payer = document.getElementById("number").value;
-        if (payer == '請選擇'){
-            alert('請重新選擇代墊者！');
-            return;
-        }
-        msg = msg + payer + " ";
 
-        var obj=document.getElementsByName("c14");
-        var selected=[];
-        for (var i=0; i<obj.length; i++) {
-            if (obj[i].checked) {
-            msg = msg +obj[i].value +" ";
-
-          }
-        }
-        
-
-		liff.sendMessages([  //推播訊息
-			{ type: 'text',
-			  text: msg 
-			},
-		])
-			.then(() => {
-				liff.closeWindow();  //關閉視窗
-			});*/
 	}
 
 	$(document).ready(function () {
@@ -70,15 +38,7 @@
 		});
 	});
 </script>
-<!--<script type="text/javascript">
-    function checkAll(obj, cName) {
-             var checkboxs = document.getElementsByName(cName);
-             $("input[name=" + cName + "]").prop("checked", true).trigger("click");
-             for (var i = 0; i < checkboxs.length; i++) {
-                 checkboxs[i].checked = obj.checked;
-             }
-     }
-</script>-->
+
 </head>
 <body style="background-color:#FFEEDD;">
 
@@ -90,7 +50,7 @@
     <p><strong>{{ list }}</strong></p>
     {% endfor %}
 
-    <input type="button" name="ok" id="sure" value="確認送出"><br>
+    <input type="button" name="ok" id="sure" value="關閉視窗"><br>
     <br/>
 </div>
 </body>
