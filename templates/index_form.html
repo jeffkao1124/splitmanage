@@ -20,9 +20,10 @@
         document.getElementById('post_groupID').value = groupid;
 
 	}
-	function pushMsg(item, cost) {
+	function pushMsg() {
+        liff.closeWindow();
 
-		if (item == '' || cost == '') {  //資料檢查
+		/*if (item == '' || cost == '') {  //資料檢查
             alert('每個項目都必須輸入！');
             return;
         }
@@ -54,7 +55,7 @@
 		])
 			.then(() => {
 				liff.closeWindow();  //關閉視窗
-			});
+			});*/
 	}
 
 	$(document).ready(function () {
@@ -65,11 +66,11 @@
 		
         $('#sure').click(function (e) {  //按下確定鈕
             
-			pushMsg($('#item').val(), $('#cost').val()); 
+			pushMsg(); 
 		});
 	});
 </script>
-<script type="text/javascript">
+<!--<script type="text/javascript">
     function checkAll(obj, cName) {
              var checkboxs = document.getElementsByName(cName);
              $("input[name=" + cName + "]").prop("checked", true).trigger("click");
@@ -77,27 +78,18 @@
                  checkboxs[i].checked = obj.checked;
              }
      }
-</script> 
+</script>-->
 </head>
 <body style="background-color:#FFEEDD;">
 
 <div align="center">
     <br><img style="float: center" src="https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/118564250_3916210075072856_4538250581291362262_o.jpg?_nc_cat=102&_nc_sid=8024bb&_nc_ohc=pVO1LBE3Ud4AX_-Wo67&_nc_ht=scontent-tpe1-1.xx&oh=e5e38d055d796ff155cec63810e9dec8&oe=5F74AE54" alt="logo" width="110" height="110"/></br><p></p><h3>Welcome to</h3></p><h3><span style="background-color: #914c53; color: #ffffff;">Account Mastiff</span></h3>
     <br/>
-    <!--<p><strong><form>項目：<input id="item" type="text" name="項目" style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
-    <p><strong><form>金額：<input id="cost" type="number" name="金額"style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>-->
     
     {% for list in new_list %}
     <p><strong>{{ list }}</strong></p>
     {% endfor %}
-    <!--<div style="margin:10px; "><p><strong> 以下請勾選其他分帳者：</strong></p></div>
 
-    <div style="margin-left:1px">
-        <input type="checkbox" id="cAll" name="cAll" onclick="checkAll(this, 'c14')" />全選<br/><br/>
-        {% for list in new_list %}
-        <input type="checkbox" id="{{ list }}" name="c14" value="{{ list }}" />{{ list }}<br/><br/>
-        {% endfor %}
-        </div>-->
     <input type="button" name="ok" id="sure" value="確認送出"><br>
     <br/>
 </div>
