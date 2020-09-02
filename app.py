@@ -70,14 +70,6 @@ def index():
             save_list.append(save_dic)
             save_dic = {}
             count+=1
-        # savefinal_list=[]
-        # count=0
-        # for i in range(SaveMsgNumber):
-        #     count+=1
-        #     savefinal_list.append(str(save_list[i]['message'])+' '+str(save_list[i]['account'])+' '+str(save_list[i]['group_num']))
-        # perfect_list=''
-        # for j in range(SetMsgNumber):
-        #     perfect_list=perfect_list+str(j+1)+'.'+str(savefinal_list[j])+'\n'
 
         person_list  = get_groupPeople(groupId,2)
         dataNumber=count
@@ -85,6 +77,10 @@ def index():
         for i in range(dataNumber):
             b=dict(save_list[i])
             GroupPeopleString=b['group_num'].split(' ')
+            for j in range(1,len(GroupPeopleString),1):
+                if GroupPeopleString[0] == GroupPeopleString[j]:
+                    del GroupPeopleString[j]
+                    break
             payAmount=int(b['account'])/len(GroupPeopleString)
             a1=set(get_groupPeople(groupId,2))
             a2=set(GroupPeopleString)
@@ -150,7 +146,6 @@ def index():
             person_account[-1]=max_tuple
 
         settle = result.split()
-
         
         return render_template('index_form.html',**locals())
 
