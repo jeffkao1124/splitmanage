@@ -32,45 +32,48 @@ def index():
     if request.method == 'POST':
         groupId = request.values['groupId']
         SetMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
-        data_UserData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
-        history_dic = {}
-        history_list = []
-        for _data in data_UserData:
-            history_dic['nickname'] = _data.nickname
-            history_list.append(history_dic)
-            history_dic = {}
-        final_list=[]
-        for i in range(SetMsgNumber):
-            final_list.append(str(history_list[i]['nickname']))
-        new_list=[]
-        for i in final_list:
-            if not i in new_list:
-                new_list.append(i)
+        a="hi"
+        # data_UserData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
+        # history_dic = {}
+        # history_list = []
+        # for _data in data_UserData:
+        #     history_dic['nickname'] = _data.nickname
+        #     history_list.append(history_dic)
+        #     history_dic = {}
+        # final_list=[]
+        # for i in range(SetMsgNumber):
+        #     final_list.append(str(history_list[i]['nickname']))
+        # new_list=[]
+        # for i in final_list:
+        #     if not i in new_list:
+        #         new_list.append(i)
 
-        output_text=""
-        for i in range(SetMsgNumber):
-            output_text=output_text + final_list[i]+' '
+        # output_text=""
+        # for i in range(SetMsgNumber):
+        #     output_text=output_text + final_list[i]+' '
 
-        
+        b="hello"
 
-        # SaveMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
-        # data_SaveData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
-        # save_dic = {}
-        # save_list = []
-        # for _Data in data_SaveData:
-        #     #save_dic['group_num'] = _Data.group_num
-        #     #save_dic['account'] = _Data.account
-        #     save_dic['message'] = _Data.message
-        #     save_list.append(save_dic)
-        #     save_dic = {}
-        # savefinal_list=[]
-        # count=0
-        # for i in range(SaveMsgNumber):
-        #     count+=1
-        #     savefinal_list.append(str(save_list[i]['mesaage'])+' '+str(save_list[i]['account'])+' '+str(save_list[i]['group_num']))
-        # perfect_list=''
-        # for j in range(SetMsgNumber):
-        #     perfect_list=perfect_list+str(j+1)+'.'+str(final_list[j])+'\n'
+        SaveMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
+        data_SaveData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+        save_dic = {}
+        save_list = []
+        for _Data in data_SaveData:
+            #save_dic['group_num'] = _Data.group_num
+            #save_dic['account'] = _Data.account
+            save_dic['message'] = _Data.message
+            save_list.append(save_dic)
+            save_dic = {}
+        savefinal_list=[]
+        count=0
+        for i in range(SaveMsgNumber):
+            count+=1
+            savefinal_list.append(str(save_list[i]['mesaage'])+' '+str(save_list[i]['account'])+' '+str(save_list[i]['group_num']))
+        perfect_list=''
+        for j in range(SetMsgNumber):
+            perfect_list=perfect_list+str(j+1)+'.'+str(final_list[j])+'\n'
+
+        c="1234"
         
 
         return render_template('index_form.html',**locals())
