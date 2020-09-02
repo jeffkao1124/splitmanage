@@ -105,8 +105,13 @@
         border-radius:10px
         }
     </style>
-    <div style="margin-bottom:10px; "><strong>{{ history_list.0 }}</strong>
-        <!--<<span class="text">
+    <div style="margin-left:1px">
+        {% for list in history_list.message %}
+        <p id="{{ list }}" name="c14" value="{{ list }}" >{{ list }}</p><br/><br/>
+        {% endfor %}
+    </div>
+    <!--<div style="margin-bottom:10px; "><strong>{{ history_list.0 }}</strong>
+    <span class="text">
     <select name="number" id="number" onchange="print_value();" class="text-select">
         <option value='請選擇'>&nbsp 請選擇</option>
         {% for list in final_list %}
@@ -123,7 +128,7 @@
     {% for list in new_list %}
     <input type="checkbox" id="{{ list }}" name="c14" value="{{ list }}" />{{ list }}<br/><br/>
     {% endfor %}
-    </div>-->
+    </div>
     <style> 
         .bt{background:#F0F0F0; width: 130px; height:30px; border-radius: 10px;} 
         .bt span{ transition: 0.5s;}  /* 過渡0.5秒 */ 
@@ -131,7 +136,7 @@
         .bt span:after{ content: "»"; opacity: 0; /* 透明度為0 */ transition: 0.5s; /* 加個0.5秒的過渡 */ } 
         .bt:hover span:after{ opacity: 1; /* 透明度為1，就是顯示 */ } 
       </style>
-    <input class="bt" type="button" name="ok" id="sure" value="確認送出"><br>
+    <input class="bt" type="button" name="ok" id="sure" value="確認送出"><br>-->
     <br/>
 </div>
 </body>
