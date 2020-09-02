@@ -80,9 +80,9 @@
     <br/>
     <p><strong><form>項目：<input id="item" type="text" name="項目" style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
     <p><strong><form>金額：<input id="cost" type="number" name="金額"style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
-    {% for list in new_list %}
+    <!--{% for list in new_list %}
     <p><strong>{{}}</strong></p>
-    {% endfor %}
+    {% endfor %}-->
     <input type="checkbox" id="cAll" name="cAll" onclick="checkAll(this, 'c14')" />全選<br/><br/>
     {% for list in new_list %}
     <input type="checkbox" id="{{ list }}" name="c14" value="{{ list }}" />{{ list }}<br/><br/>
