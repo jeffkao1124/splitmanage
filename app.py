@@ -49,8 +49,25 @@ def index():
         # perfect_list=''
         # for j in range(SetMsgNumber):
         #     perfect_list=perfect_list+str(j+1)+'.'+str(savefinal_list[j])+'\n'
-        
+        if request.method == 'POST':
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            return render_template('settle_form.html',**locals())
+        
         return render_template('index_form.html',**locals())
 
     return render_template('home.html',**locals())
