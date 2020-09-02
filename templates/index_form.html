@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+    <title>分帳表單</title>
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+    function print_value() {
+        <!-- 將 select 的值在印出 -->
+        document.getElementById("result") = document.getElementById("number").value
+    }
+</script>
+<script>
+	function initializeApp(data) {  //初始化LIFF
+        var userid = data.context.userId;
+        var groupid = data.context.groupId; //取得ID
+        document.getElementById('post_groupID').value =groupid;
+
+	}
+	function pushMsg(item, cost) {
+
+		if (item == '' || cost == '') {  //資料檢查
+            alert('每個項目都必須輸入！');
+            return;
+        }
+        
+        /*for(i=1 ; i<(count+1) ; i++){
+            if ($('#splitter'+i).val() =='') {
+                alert('每個項目都必須輸入！');
+                return;
+        }
+        
+        }*/
+        var msg = "分帳 ";  //回傳訊息字串
+		msg = msg + item + " ";
+        msg = msg + cost + " ";
+        payer = document.getElementById("number").value;
+        if (payer == '請選擇'){
+            alert('請重新選擇代墊者！');
+            return;
+        }
+        msg = msg + payer + " ";
+
+        var obj=document.getElementsByName("c14");
+        var selected=[];
+        for (var i=0; i<obj.length; i++) {
+            if (obj[i].checked) {
+            msg = msg +obj[i].value +" ";
+
+          }
+        }
+        
+
+		liff.sendMessages([  //推播訊息
+			{ type: 'text',
+			  text: msg 
+			},
+		])
+			.then(() => {
+				liff.closeWindow();  //關閉視窗
+			});
+	}
+
+	$(document).ready(function () {
+    
+		liff.init(function (data) {  //初始化LIFF
+            initializeApp(data);
+		});
+		
+        $('#sure').click(function (e) {  //按下確定鈕
+            
+			pushMsg($('#item').val(), $('#cost').val()); 
+		});
+	});
+</script>
+<script type="text/javascript">
+    function checkAll(obj, cName) {
+             var checkboxs = document.getElementsByName(cName);
+             $("input[name=" + cName + "]").prop("checked", true).trigger("click");
+             for (var i = 0; i < checkboxs.length; i++) {
+                 checkboxs[i].checked = obj.checked;
+             }
+     }
+</script> 
+</head>
+<body style="background-color:#FFEEDD;">
+
+<div align="center">
+    <br><img style="float: center" src="https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/118564250_3916210075072856_4538250581291362262_o.jpg?_nc_cat=102&_nc_sid=8024bb&_nc_ohc=pVO1LBE3Ud4AX_-Wo67&_nc_ht=scontent-tpe1-1.xx&oh=e5e38d055d796ff155cec63810e9dec8&oe=5F74AE54" alt="logo" width="110" height="110"/></br><p></p><h3>Welcome to</h3></p><h3><span style="background-color: #914c53; color: #ffffff;">Account Mastiff</span></h3>
+    <br/>
+    <p><strong><form>項目：<input id="item" type="text" name="項目" style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
+    <p><strong><form>金額：<input id="cost" type="number" name="金額"style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
+    <!--<p><strong><form>代墊者：<input id="payer" type="text" name="欄位名稱"></strong></p></form>-->
+    <style>
+        .text{
+        width:100%;
+        }
+        .text select{
+        width:170px; 
+        height:30px;
+        line-height: 55px;
+        font-size:18px;
+        border: 1px solid #000;
+        border-radius:10px
+        }
+    </style>
+    <div style="margin-bottom:10px; "><strong>代墊者：</strong>
+    <span class="text">
+    <select name="number" id="number" onchange="print_value();" class="text-select">
+        <option value='請選擇'>&nbsp 請選擇</option>
+        {% for list in new_list %}
+        <option id="{{ list }}" value="{{ list }}">{{ list }}</option>
+        {% endfor %}
+    </select>
+</span> </div>
+    <p id="result" type="hidden" name="欄位名稱"></p>
+    <p><i>（ 🔸🔸代墊者也是分帳者之一🔸🔸 ）</i></p>
+    <div style="margin:10px; "><p><strong> 以下請勾選其他分帳者：</strong></p></div>
+
+    <div style="margin-left:1px">
+    <input type="checkbox" id="cAll" name="cAll" onclick="checkAll(this, 'c14')" />全選<br/><br/>
+    {% for list in new_list %}
+    <input type="checkbox" id="{{ list }}" name="c14" value="{{ list }}" />{{ list }}<br/><br/>
+    {% endfor %}
+    </div>
+    <style> 
+        .bt{background:#F0F0F0; width: 130px; height:30px; border-radius: 10px;} 
+        .bt span{ transition: 0.5s;}  /* 過渡0.5秒 */ 
+        .bt:hover span{ padding-right: 15px;}  /* 當滑鼠在按鈕上時span內邊右距離25px */ 
+        .bt span:after{ content: "»"; opacity: 0; /* 透明度為0 */ transition: 0.5s; /* 加個0.5秒的過渡 */ } 
+        .bt:hover span:after{ opacity: 1; /* 透明度為1，就是顯示 */ } 
+      </style>
+    <input class="bt" type="button" name="ok" id="sure" value="確認送出"><br>
+    <br/>
+</div>
+</body>
+</html>
+
