@@ -31,24 +31,43 @@ class usermessage(db.Model):
 def index():
     if request.method == 'POST':
         groupId = request.values['groupId']
-        SetMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
-        data_UserData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+        SetMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
+        data_UserData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
         history_dic = {}
         history_list = []
         for _data in data_UserData:
-            history_dic['group_num'] = _data.group_num
-            history_dic['account'] = _data.account
-            history_dic['message'] = _data.message
+            history_dic['nickname'] = _data.nickname
             history_list.append(history_dic)
             history_dic = {}
         final_list=[]
-        count=0
         for i in range(SetMsgNumber):
-            count+=1
-            final_list.append(str(history_list[i]['mesaage'])+' '+str(history_list[i]['account'])+' '+str(history_list[i]['group_num']))
-        perfect_list=''
-        for j in range(SetMsgNumber):
-            perfect_list=perfect_list+str(j+1)+'.'+str(final_list[j])+'\n'
+            final_list.append(str(history_list[i]['nickname']))
+        new_list=[]
+        for i in final_list:
+            if not i in new_list:
+                new_list.append(i)
+
+        output_text=""
+        for i in range(SetMsgNumber):
+            output_text=output_text + final_list[i]+' '
+        # SetMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
+        # data_UserData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+        # history_dic = {}
+        # history_list = []
+        # for _data in data_UserData:
+        #     history_dic['group_num'] = _data.group_num
+        #     history_dic['account'] = _data.account
+        #     history_dic['message'] = _data.message
+        #     history_list.append(history_dic)
+        #     history_dic = {}
+        # final_list=[]
+        # count=0
+        # for i in range(SetMsgNumber):
+        #     count+=1
+        #     final_list.append(str(history_list[i]['mesaage'])+' '+str(history_list[i]['account'])+' '+str(history_list[i]['group_num']))
+        # perfect_list=''
+        # for j in range(SetMsgNumber):
+        #     perfect_list=perfect_list+str(j+1)+'.'+str(final_list[j])+'\n'
 
         return render_template('index_form.html',**locals())
 
