@@ -49,7 +49,6 @@ def index():
         # perfect_list=''
         # for j in range(SetMsgNumber):
         #     perfect_list=perfect_list+str(j+1)+'.'+str(savefinal_list[j])+'\n'
-        if request.method == 'POST':
 
 
 
@@ -65,29 +64,16 @@ def index():
 
 
 
-
-            return render_template('settle_form.html',**locals())
         
         return render_template('index_form.html',**locals())
 
     return render_template('home.html',**locals())
 
-@app.route('/submit',methods={'Post','Get'})
+@app.route('/submit',methods=['POST','GET'])
 def submit():
     groupId = 0
-    groupId = request.values['groupid']
-    data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).all()
-    history_dic = {}
-    history_list = []
-    for _data in data_UserData:
-        history_dic['user_id'] = _data.user_id
-        history_dic['group_id'] = _data.group_id
-        history_dic['message'] = _data.message
-        history_dic['account'] = _data.account
-        history_list.append(history_dic)
-        history_dic = {}
 
-    a = history_list[0]['message']
+
 
     return groupId
 
