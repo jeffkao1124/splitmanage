@@ -111,7 +111,7 @@
     <span class="text">
     <select name="number" id="number" onchange="print_value();" class="text-select">
         <option value='請選擇'>&nbsp 請選擇</option>
-        {% for list in new_list %}
+        {% for list in final_list %}
         <option id="{{ list }}" value="{{ list }}">{{ list }}</option>
         {% endfor %}
     </select>
