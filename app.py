@@ -71,7 +71,7 @@ def index():
             savefinal_list.append(str(save_list[i]['message'])+' '+str(save_list[i]['account'])+' '+str(save_list[i]['group_num']))
         perfect_list=''
         for j in range(SetMsgNumber):
-            perfect_list=perfect_list+str(j+1)+'.'+str(final_list[j])+'\n'
+            perfect_list=perfect_list+str(j+1)+'.'+str(savefinal_list[j])+'\n'
 
         c="1234"
         
