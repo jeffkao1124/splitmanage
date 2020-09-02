@@ -32,7 +32,6 @@ def index():
     if request.method == 'POST':
         groupId = request.values['groupId']
         SetMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
-        a="hi"
         # data_UserData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
         # history_dic = {}
         # history_list = []
@@ -52,7 +51,6 @@ def index():
         # for i in range(SetMsgNumber):
         #     output_text=output_text + final_list[i]+' '
 
-        b="hello"
 
         SaveMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
         data_SaveData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
@@ -72,8 +70,6 @@ def index():
         perfect_list=''
         for j in range(SetMsgNumber):
             perfect_list=perfect_list+str(j+1)+'.'+str(savefinal_list[j])+'\n'
-
-        c="1234"
         
 
         return render_template('index_form.html',**locals())
