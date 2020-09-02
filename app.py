@@ -58,8 +58,8 @@ def get_groupPeople(groupId,mode):
 def index():
     if request.method == 'POST':
         groupId = request.values['groupId']
-        SaveMsgNumber = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
-        data_SaveData = usermessage.query.filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+        SaveMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
+        data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
         save_dic = {}
         save_list = []
         count=0
