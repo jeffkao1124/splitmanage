@@ -8,12 +8,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 <script>
-    function print_value() {
-        <!-- 將 select 的值在印出 -->
-        document.getElementById("result") = document.getElementById("number").value
-    }
-</script>
-<script>
 	function initializeApp(data) {  //初始化LIFF
         var userid = data.context.userId;
         var groupid = data.context.groupId; //取得ID
@@ -87,17 +81,6 @@
     <p><strong><form>項目：<input id="item" type="text" name="項目" style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
     <p><strong><form>金額：<input id="cost" type="number" name="金額"style="width:170px; height:30px; border:1px black double; background-color:#ffffff; border-radius:10px"></strong></p></form>
 
-    <div><strong>代墊者：</strong>
-    <span class="text">
-    <select name="number" id="number" onchange="print_value();" class="text-select">
-        <option value='請選擇'>請選擇</option>
-        {% for list in new_list %}
-        <option id="{{ list }}" value="{{ list }}">{{ list }}</option>
-        {% endfor %}
-    </select>
-    </span> 
-    </div>
-    <p id="result" type="hidden" name="欄位名稱"></p>
     <p><i>（ 🔸🔸代墊者也是分帳者之一🔸🔸 ）</i></p>
     <div><p><strong> 以下請勾選其他分帳者：</strong></p></div>
 
