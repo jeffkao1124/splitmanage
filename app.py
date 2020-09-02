@@ -59,8 +59,8 @@ def index():
         save_dic = {}
         save_list = []
         for _Data in data_SaveData:
-            #save_dic['group_num'] = _Data.group_num
-            #save_dic['account'] = _Data.account
+            save_dic['group_num'] = _Data.group_num
+            save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
             save_list.append(save_dic)
             save_dic = {}
