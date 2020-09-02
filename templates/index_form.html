@@ -66,7 +66,10 @@
     </table>
     <br/>
     <p align="left" style="font-size:20px;"><strong>結算：</strong></p>
-    <p><strong>{{ result }}</strong></p>
+    {% list in settle %}
+    <p><strong>{{ list }}</strong></p><br/>
+    {% endfor%}
+    <br/>
     <input type="button" name="ok" id="sure" value="關閉視窗"><br>
     <br/>
 </div>

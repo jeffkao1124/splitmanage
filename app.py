@@ -149,8 +149,7 @@ def index():
             person_account[0]=min_tuple
             person_account[-1]=max_tuple
 
-
-
+            settle = result.split
 
         
         return render_template('index_form.html',**locals())
