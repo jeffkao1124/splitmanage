@@ -83,10 +83,14 @@
     <!--{% for list in new_list %}
     <p><strong>{{}}</strong></p>
     {% endfor %}-->
+    <div style="margin:10px; "><p><strong> 以下請勾選其他分帳者：</strong></p></div>
+
+    <div style="margin-left:1px">
     <input type="checkbox" id="cAll" name="cAll" onclick="checkAll(this, 'c14')" />全選<br/><br/>
     {% for list in new_list %}
     <input type="checkbox" id="{{ list }}" name="c14" value="{{ list }}" />{{ list }}<br/><br/>
     {% endfor %}
+    </div>
     <input type="button" name="ok" id="sure" value="確認送出"><br>
     <br/>
 </div>
