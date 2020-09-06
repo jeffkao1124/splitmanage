@@ -54,7 +54,7 @@ def get_groupPeople(groupId,mode):
         return 0
 
 
-@app.route('/',methods=['POST','GET'])
+@app.route('/',methods=['POST'])
 def index():
     if request.method == 'POST':
         groupId = request.values['groupId']
@@ -152,9 +152,10 @@ def index():
 
     return render_template('home.html',**locals())
 
+@app.route('/',methods=['GET'])
 def edit():
-    if request.method == 'POST':
-        userId = request.values['userId']
+    if request.method == 'GET':
+
         a = 'delete'
 
         return render_template('settle_form.html',**locals())
