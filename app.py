@@ -56,9 +56,7 @@ def get_groupPeople(groupId,mode):
 
 @app.route('/',methods=['POST','GET'])
 def index():
-    groupId = request.values['groupId']
-    userId = request.values['userId']
-    if request.method == 'POST' and groupId != 0:
+    if request.method == 'POST':
         groupId = request.values['groupId']
         SaveMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
         data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
@@ -151,13 +149,19 @@ def index():
         settle = result.split()
         
         return render_template('index_form.html',**locals())
-    
-    if request.method == 'POST' and userId != 0:
+
+    return render_template('home.html',**locals())
+
+def edit():
+    if request.method == 'POST':
+        userId = request.values['userId']
         a = 'delete'
 
         return render_template('settle_form.html',**locals())
 
-    return render_template('home.html',**locals())
+    return render_template('index_form.html',**locals())
+
+
 
 @app.route('/submit',methods=['POST','GET'])
 def submit():
