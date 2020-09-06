@@ -54,7 +54,7 @@ def get_groupPeople(groupId,mode):
         return 0
 
 
-@app.route('/',methods=['POST','GET'])
+@app.route('/',methods=['POST'])
 def index():
     if request.method == 'POST':
         groupId = request.values['groupId']
