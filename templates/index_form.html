@@ -20,12 +20,25 @@
         document.getElementById('post_groupID').value = groupid;
 
 	}
-	function pushMsg() {
+	function closewin() {
 
         liff.closeWindow();
 
 
 	}
+    function pushMsg() {
+        var msg = '刪除';
+        liff.sendMessages([  //推播訊息
+			{ type: 'text',
+			  text: msg
+			},
+		])
+			.then(() => {
+				liff.closeWindow();  //關閉視窗
+			});
+
+
+    }
 
 	$(document).ready(function () {
     
@@ -34,6 +47,10 @@
 		});
 		
         $('#sure').click(function (e) {  //按下確定鈕
+            
+			closewin(); 
+		});
+        $('#delete').click(function (e) {  //按下確定鈕
             
 			pushMsg(); 
 		});
@@ -80,6 +97,8 @@
     {% endfor %}
     <br/>
     <input type="button" name="ok" id="sure" value="關閉視窗"><br>
+    <br/>
+    <input type="button" name="ok" id="delete" value="清空資料"><br>
     <br/>
 </div>
 </body>
