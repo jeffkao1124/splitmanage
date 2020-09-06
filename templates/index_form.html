@@ -18,6 +18,7 @@
         var userid = data.context.userId;
         var groupid = data.context.groupId; //取得ID
         document.getElementById('post_groupID').value = groupid;
+        document.getElementById('post_userID').value = userid;
 
 	}
 	function pushMsg() {
@@ -73,6 +74,11 @@
             {% endfor%}
         </tbody>
     </table>
+    <br/>
+    <form method='post' action="{{url_for ('index')}}">
+        <p><input id='post_userID' type="hidden" name="userId" value='0'></p>
+        <p><button> <span>編輯</span> </button></p>
+    </form>
     <br/>
     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp結算：</strong></p>
     {% for list in settle %}
