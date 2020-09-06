@@ -64,12 +64,13 @@ def index():
         save_list = []
         count=0
         for _Data in data_SaveData:
+            count+=1
+            save_dic['number'] = _Data.count
             save_dic['group_num'] = _Data.group_num
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
             save_list.append(save_dic)
             save_dic = {}
-            count+=1
 
         person_list  = get_groupPeople(groupId,2)
         dataNumber=count

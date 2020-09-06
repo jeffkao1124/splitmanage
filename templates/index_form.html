@@ -57,6 +57,7 @@
     <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp目前分帳清單：</strong></p>
     <table width=82% style="border-collapse:collapse; border:2px #FFAF60 solid;" cellpadding="10" border='1'>
         <thead align="center">
+            <th>編號</th>
             <th>項目</th>
             <th>金額</th>
             <th>分帳人</th>
@@ -64,6 +65,7 @@
         <tbody>
             {% for _data in save_list %}
                 <tr>
+                    <td align="center">{{ _data.number }}</td>
                     <td>{{ _data.message }}</td>
                     <td>{{ _data.account }}</td>
                     <td>{{ _data.group_num }}</td>
