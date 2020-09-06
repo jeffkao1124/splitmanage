@@ -150,13 +150,7 @@ def index():
         
         return render_template('index_form.html',**locals())
 
-    else:
-        a = 'delete'
-        return render_template('settle_form.html',**locals())
-
     return render_template('home.html',**locals())
-
-
 
 @app.route('/submit',methods=['POST','GET'])
 def submit():
