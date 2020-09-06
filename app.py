@@ -147,13 +147,12 @@ def index():
             person_account[-1]=max_tuple
 
         settle = result.split()
-
-        if request.method == 'GET':
-            a = 'delete'
-            return render_template('settle_form.html',**locals())
         
         return render_template('index_form.html',**locals())
 
+    else:
+        a = 'delete'
+        return render_template('settle_form.html',**locals())
 
     return render_template('home.html',**locals())
 
