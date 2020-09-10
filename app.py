@@ -145,6 +145,7 @@ def index():
                 max_tuple=(max_tuple[0],0)
             person_account[0]=min_tuple
             person_account[-1]=max_tuple
+        result=result+'下次不要再讓'+str(max_tuple[0])+'付錢啦! TA幫你們付很多了!'
 
         settle = result.split()
         
