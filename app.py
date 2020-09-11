@@ -155,9 +155,6 @@ def index():
         
         return render_template('index_form.html',**locals())
 
-        if request.values['send'] == '送出':
-            name = request.values['user']
-	        return render_template('settle_form.html',**locals())
     return render_template('home.html',**locals())
 
 @app.route('/submit',methods=['POST','GET'])
