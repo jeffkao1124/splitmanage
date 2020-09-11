@@ -125,10 +125,11 @@
         <select id=theList size=5>
             <option value='請選擇'>請選擇</option>
             {% for _data in save_list %}
-            <option id="{{ _data.message }}" value="{{ _data.message }}">{{ _data.message }}</option>
+            <option id="{{ _data.message }}" value="{{ _data.message }}">{{ _data.number }}{{ _data.message }}</option>
             {% endfor %}
 
         </select>
+        <br/>
         <p>
         <input type="button" value="刪除反白選項" onclick="deleteOption(theList)"><br>
         </form>
