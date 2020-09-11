@@ -105,10 +105,6 @@
     <p>{{ list }}</p>
     {% endfor %}
     <br/>
-    <input type="button" name="ok" id="sure" value="關閉視窗"><br>
-    <br/>
-    <input type="button" name="ok" id="delete" value="清空資料"><br>
-    <br/>
     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
     <script>
         function deleteOption(list){
@@ -129,7 +125,7 @@
                 list.options[index]=null;
 
             else
-                alert("無反白選項！");
+                alert("無資料可以刪除！");
         }
         
         </script>
@@ -143,10 +139,11 @@
 
         </select>
         <br/><br/>
-        <input type="button" value="刪除反白選項" onclick="deleteOption(theList)"><br>
+        <input type="button" value="刪除該筆資料" onclick="deleteOption(theList)"><br>
         </form>
         <br/>
-
+        <input type="button" name="ok" id="delete" value="刪除所有資料"><br>
+        <br/>
 </div>
 </body>
 </html>
