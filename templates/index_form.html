@@ -113,8 +113,17 @@
     <script>
         function deleteOption(list){
             var index=list.selectedIndex;
+            var msg = 'delete ';
+            msg=msg+index;
+
+        liff.sendMessages([  //推播訊息
+			{ type: 'text',
+			  text: msg
+			},
+		])
             if (index>=0)
                 list.options[index]=null;
+
             else
                 alert("無反白選項！");
         }
@@ -125,13 +134,14 @@
         <select id=theList size=5>
             <option value='請選擇'>請選擇</option>
             {% for _data in save_list %}
-            <option id="{{ _data.message }}" value="{{ _data.message }}">{{ _data.number }} {{ _data.message }} {{ _data.account }}</option>
+            <option id="{{ _data.number }}" value="{{ _data.number }}">{{ _data.number }} {{ _data.message }} {{ _data.account }}</option>
             {% endfor %}
 
         </select>
         <br/><br/>
         <input type="button" value="刪除反白選項" onclick="deleteOption(theList)"><br>
         </form>
+        <br/>
 
 </div>
 </body>
