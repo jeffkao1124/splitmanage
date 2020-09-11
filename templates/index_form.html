@@ -124,7 +124,7 @@
         <form>
         <select id=theList size=5>
             <option value='請選擇'>&nbsp 請選擇</option>
-            {% or _data in save_list %}
+            {% for _data in save_list %}
             <option id="{{ _data.message }}" value="{{ _data.message }}">{{ _data.message }}</option>
             {% endfor %}
             <!-- <option value=星期一>Monday
