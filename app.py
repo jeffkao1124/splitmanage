@@ -57,6 +57,8 @@ def get_groupPeople(groupId,mode):
 @app.route('/',methods=['POST','GET'])
 def index():
     if request.method == 'POST':
+        if request.values['send']=='送出':
+		    return render_template('settle_form.html',**locals())
         groupId = request.values['groupId']
         SaveMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
         data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
