@@ -109,10 +109,34 @@
     <br/>
     <input type="button" name="ok" id="delete" value="清空資料"><br>
     <br/>
-    <form method="post" action="{{url_for ('index')}}">
-        <input type="text" name="user">
-        <input type="submit" name="send" value="送出">
-    </form>
+    <span style="font-size:13px;">跳出確認小視窗並前往該連結之頁面：</span>
+	<select id="choose" onchange="TheConfirmBox()">
+		<option disabled=disabled selected=selected>哈囉，這是我的筆記實作</option>
+		<optgroup label="群組標籤1">
+			<option value="https://www.google.com.tw/">Google</option>
+			<option value="http://www.w3schools.com/">W3Schools</option>
+		</optgroup>
+		<optgroup label="群組標籤2">
+			<option value="http://blog.yam.com/dllee">dllee</option>
+			<option value="https://tw.yahoo.com/">Yahoo奇摩</option>
+		</optgroup>
+		<option disabled=disabled value="https://tw.yahoo.com/">歡迎給予指導！</option>
+	</select>
+	<span id="check" style="color:red;"></span><br>
+	<script>
+		function TheConfirmBox() {
+			var noteToMe;
+			/*取得id為choose的選單裡剛剛所點擊的連結的名稱*/
+			var whichUserChoose=choose.options[choose.selectedIndex].text;
+			if (confirm("Hello！你確定要前往"+whichUserChoose+"?") == true){
+				noteToMe = "你選取想前往"+whichUserChoose+"！";
+				window.open(choose.options[choose.selectedIndex].value);
+			}else{
+				noteToMe = "你按了取消喔！";
+			}
+			document.getElementById("check").innerHTML = noteToMe;
+		}
+	</script>
 </div>
 </body>
 </html>
