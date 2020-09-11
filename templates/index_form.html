@@ -109,7 +109,7 @@
     <br/>
     <input type="button" name="ok" id="delete" value="清空資料"><br>
     <br/>
-    <p><strong>刪除資料</strong></p>
+    <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
     <script>
         function deleteOption(list){
             var index=list.selectedIndex;
@@ -123,14 +123,11 @@
         
         <form>
         <select id=theList size=5>
-            <option value='請選擇'>&nbsp 請選擇</option>
+            <option value='請選擇'>請選擇</option>
             {% for _data in save_list %}
             <option id="{{ _data.message }}" value="{{ _data.message }}">{{ _data.message }}</option>
             {% endfor %}
-            <!-- <option value=星期一>Monday
-            <option value=星期三>Wednesday
-            <option value=星期五>Friday
-            <option value=星期日>Sunday -->
+
         </select>
         <p>
         <input type="button" value="刪除反白選項" onclick="deleteOption(theList)"><br>
