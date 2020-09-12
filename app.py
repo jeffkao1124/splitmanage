@@ -57,44 +57,52 @@ def get_groupPeople(groupId,mode):
 @app.route('/',methods=['POST','GET'])
 def index():
     if request.method == 'POST':
-        selfGroupId = request.values['groupId']
-        dataSettle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==selfGroupId).filter(usermessage.status=='save')
-        historySettle_dic = {}
-        historySettle_list = []
-        person_list  = get_groupPeople(selfGroupId,2)
-        for _data in dataSettle_UserData:
-            historySettle_dic['Mesaage'] = _data.message
-            historySettle_dic['Account'] = _data.account
-            historySettle_dic['GroupPeople'] =_data.group_num
-            historySettle_list.append(historySettle_dic)
-            historySettle_dic = {}
-            
-        dataNumber=len(historySettle_list)
-        Zero= np.zeros((dataNumber,get_groupPeople(selfGroupId,1)))
+
+        groupId = request.values['groupId']
+        SaveMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
+        data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+        save_dic = {}
+        save_list = []
+        count=0
+        for _Data in data_SaveData:
+            count+=1
+            save_dic['number'] = count
+            save_dic['group_num'] = _Data.group_num
+            save_dic['account'] = _Data.account
+            save_dic['message'] = _Data.message
+            save_list.append(save_dic)
+            save_dic = {}
+
+        person_list  = get_groupPeople(groupId,2)
+        dataNumber=count
+        Zero= np.zeros((dataNumber,get_groupPeople(groupId,1)))
         for i in range(dataNumber):
-            b=dict(historySettle_list[i])
-            GroupPeopleString=b['GroupPeople'].split(' ')  #刪除代墊者
-            del GroupPeopleString[0]
-            payAmount=int(b['Account'])/len(GroupPeopleString)
-            a1=set(get_groupPeople(selfGroupId,2))      #分帳設定有的人
+            b=dict(save_list[i])
+            GroupPeopleString=b['group_num'].split(' ')
+            for j in range(1,len(GroupPeopleString),1):
+                if GroupPeopleString[0] == GroupPeopleString[j]:
+                    del GroupPeopleString[j]
+                    break
+            payAmount=int(b['account'])/len(GroupPeopleString)
+            a1=set(get_groupPeople(groupId,2))
             a2=set(GroupPeopleString)
-            duplicate = list(a1.intersection(a2))                     #a1和a2重複的人名
+            duplicate = list(a1.intersection(a2))
             count=0
-            for j in range(len(duplicate)):      #分帳金額
-                place=get_groupPeople(selfGroupId,2).index(duplicate[count])
+            for j in range(len(duplicate)):
+                place=get_groupPeople(groupId,2).index(duplicate[count])
                 Zero[i][place]=payAmount
                 count+=1
 
         replaceZero=Zero
         totalPayment=replaceZero.sum(axis=0)
 
-        paid= np.zeros((1,len(get_groupPeople(selfGroupId,2))))  #代墊金額
-        for i in range(len(get_groupPeople(selfGroupId,2))):
-            for j in range(len(historySettle_list)):
-                b=dict(historySettle_list[j])
-                GroupPeopleString=b['GroupPeople'].split(' ')
-                if GroupPeopleString[0] == get_groupPeople(selfGroupId,2)[i]:
-                    paidAmount=int(b['Account'])
+        paid= np.zeros((1,len(get_groupPeople(groupId,2))))
+        for i in range(len(get_groupPeople(groupId,2))):
+            for j in range(len(save_list)):
+                b=dict(save_list[j])
+                GroupPeopleString=b['group_num'].split(' ')
+                if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
+                    paidAmount=int(b['account'])
                     paid[0][i]=paid[0][i]+paidAmount
                 else:
                     continue
@@ -106,7 +114,8 @@ def index():
         for i in range(len(person_list)):
             zip_tuple=(person_list[i],account[0][i])
             person_account.append(zip_tuple)
-
+        print(person_account)
+        sys.stdout.flush()
 
         #重複執行交換動作
         result=""
@@ -135,9 +144,8 @@ def index():
                 result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+str(abs(round(max,2)))+'元'+'\n'
                 min_tuple=(min_tuple[0],0)
                 max_tuple=(max_tuple[0],0)
-                
             person_account[0]=min_tuple
-            person_account[-1]=max_tuple    
+            person_account[-1]=max_tuple
         if SaveMsgNumber>=1:
             warning='下次不要再讓'+str(max_tuple[0])+'付錢啦!TA幫你們付很多了!'
         else:
