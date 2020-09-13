@@ -79,10 +79,7 @@ def index():
         for i in range(dataNumber):
             b=dict(save_list[i])
             GroupPeopleString=b['group_num'].split(' ')
-            for j in range(1,len(GroupPeopleString),1):
-                if GroupPeopleString[0] == GroupPeopleString[j]:
-                    del GroupPeopleString[j]
-                    break
+            del GroupPeopleString[0]
             payAmount=int(b['account'])/len(GroupPeopleString)
             a1=set(get_groupPeople(groupId,2))
             a2=set(GroupPeopleString)
@@ -165,3 +162,4 @@ def submit():
 
 if __name__ =="__main__":
     app.run()
+
