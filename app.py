@@ -159,13 +159,13 @@ def index():
         # C, S = np.cos(X), np.sin(X)
         # plt.rcParams['figure.dpi'] = 300  # 分辨率
         plt.rcParams['savefig.dpi'] = 300  # 图片像素
-        plt.rcParams['figure.figsize'] = (1.0, 1.0)  # 设置figure_size尺寸800x400
+        plt.rcParams['figure.figsize'] = (1.5, 1.5)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         plt.rcParams["font.family"]="DejaVu Sans"
-        plt.xlabel('Person List',fontsize=10)
-        plt.ylabel('Amount',fontsize=10)
-        plt.bar(person_list,changeArray,width=0.5,color='red')
+        plt.xlabel('Person List',fontsize=5)
+        plt.ylabel('Amount',fontsize=5)
+        plt.bar(person_list,changeArray,width=0.3,color='red')
 
         buffer = BytesIO()
         plt.savefig(buffer)
