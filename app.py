@@ -158,7 +158,8 @@ def index():
         # X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
         # C, S = np.cos(X), np.sin(X)
         # plt.rcParams['figure.dpi'] = 300  # 分辨率
-        plt.rcParams['axes.facecolor'] = '#FFEEDD'
+        # plt.rcParams['axes.facecolor'] = '#FFEEDD'
+        plt.figure(facecolor='red',edgecolor='black')
         plt.rcParams['savefig.dpi'] = 200  # 图片像素
         plt.rcParams['figure.figsize'] = (1.8, 1.5)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
@@ -171,7 +172,7 @@ def index():
         plt.bar(person_list,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
-        plt.savefig(buffer,edgecolor='#FFEEDD')
+        plt.savefig(buffer)
         plot_data = buffer.getvalue()
         # 将matplotlib图片转换为HTML
         imb = base64.b64encode(plot_data)  # 对plot_data进行编码
