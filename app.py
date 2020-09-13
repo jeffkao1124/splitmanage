@@ -157,16 +157,15 @@ def index():
 
         # X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
         # C, S = np.cos(X), np.sin(X)
-        #plt.rcParams['figure.dpi'] = 100  # 分辨率
-        #plt.rcParams['savefig.dpi'] = 100  # 图片像素
-        plt.rcParams['figure.figsize'] = (4.0, 2.0)  # 设置figure_size尺寸800x400
-
+        plt.rcParams['figure.dpi'] = 100  # 分辨率
+        plt.rcParams['savefig.dpi'] = 100  # 图片像素
+        plt.rcParams['figure.figsize'] = (4.0, 3.0)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         plt.rcParams["font.family"]="DejaVu Sans"
         plt.xlabel('Person List',fontsize=10)
         plt.ylabel('Amount',fontsize=10)
-        plt.bar(person_list,changeArray,width=0.8,color='red')
+        plt.bar(person_list,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
         plt.savefig(buffer)
