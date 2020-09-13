@@ -6,6 +6,9 @@ from sqlalchemy import desc
 from flask import render_template
 import numpy as np
 import sys
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
 
 app=Flask(__name__)
 app.config[
@@ -149,6 +152,23 @@ def index():
             warning=''
 
         settle = result.split()
+
+        X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
+        C, S = np.cos(X), np.sin(X)
+        #plt.rcParams['figure.dpi'] = 100  # 分辨率
+        #plt.rcParams['savefig.dpi'] = 100  # 图片像素
+        plt.rcParams['figure.figsize'] = (8.0, 4.0)  # 设置figure_size尺寸800x400
+        plt.plot(X, C)
+        plt.plot(X, S)
+
+        buffer = BytesIO()
+        plt.savefig(buffer)
+        plot_data = buffer.getvalue()
+        # 将matplotlib图片转换为HTML
+        imb = base64.b64encode(plot_data)  # 对plot_data进行编码
+        ims = imb.decode()
+        imd = "data:image/png;base64," + ims
+        img = imd
         
         return render_template('index_form.html',**locals())
 

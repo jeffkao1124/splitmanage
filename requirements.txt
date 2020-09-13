@@ -11,3 +11,6 @@ Werkzeug==0.15.5
 jinja2
 datetime
 numpy
+matplotlib.pyplot
+base64
+io
