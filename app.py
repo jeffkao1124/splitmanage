@@ -158,21 +158,22 @@ def index():
         # X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
         # C, S = np.cos(X), np.sin(X)
         # plt.rcParams['figure.dpi'] = 300  # 分辨率
-        plt.rcParams['axes.facecolor'] = '#FFEEDD'
-        plt.rcParams['axes.edgecolor'] = '#FFEEDD'
-        plt.rcParams['savefig.dpi'] = 200  # 图片像素
-        plt.rcParams['figure.figsize'] = (1.8, 1.5)  # 设置figure_size尺寸800x400
-        plt.xticks(fontsize=5)
-        plt.yticks(fontsize=5)
+        fig = plt.figure()
+        fig.patch.set_facecolor('xkcd:mint green')
+        fig.rcParams['axes.facecolor'] = '#FFEEDD'
+        fig.rcParams['savefig.dpi'] = 200  # 图片像素
+        fig.rcParams['figure.figsize'] = (1.8, 1.5)  # 设置figure_size尺寸800x400
+        fig.xticks(fontsize=5)
+        fig.yticks(fontsize=5)
         # plt.rcParams['font.sas-serig']=['SimHei']
         # plt.rcParams['axes.unicode_minus']=False
-        plt.rcParams["font.family"]="SimHei"
-        plt.xlabel('Person List',fontsize=5)
-        plt.ylabel('Amount',fontsize=5)
-        plt.bar(person_list,changeArray,width=0.5,color='red')
+        fig.rcParams["font.family"]="SimHei"
+        fig.xlabel('Person List',fontsize=5)
+        fig.ylabel('Amount',fontsize=5)
+        fig.bar(person_list,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
-        plt.savefig(buffer)
+        fig.savefig(buffer)
         plot_data = buffer.getvalue()
         # 将matplotlib图片转换为HTML
         imb = base64.b64encode(plot_data)  # 对plot_data进行编码
