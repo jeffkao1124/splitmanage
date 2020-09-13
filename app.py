@@ -171,7 +171,7 @@ def index():
         plt.bar(person_list,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
-        plt.savefig(buffer)
+        plt.savefig(buffer,edgecolor='#FFEEDD')
         plot_data = buffer.getvalue()
         # 将matplotlib图片转换为HTML
         imb = base64.b64encode(plot_data)  # 对plot_data进行编码
