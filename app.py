@@ -109,6 +109,7 @@ def index():
                     continue
 
         account=paid-totalPayment
+        changeArray=np.array(account.flatten())
 
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
@@ -165,7 +166,7 @@ def index():
         plt.rcParams["font.family"]="DejaVu Sans"
         plt.xlabel('Person List',fontsize=20)
         plt.ylabel('Amount',fontsize=20)
-        plt.bar(person_list,account)
+        plt.bar(person_list,changeArray)
         plt.title("TEST",fontsize=25)
         # plt.plot(X, C)
         # plt.plot(X, S)
