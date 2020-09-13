@@ -171,7 +171,7 @@ def index():
         plt.bar(person_list,changeArray,width=0.5,color='red')
 
         fig = plt.figure()
-        fig.patch.set_facecolor('xkcd:mint green')
+        fig.patch.set_facecolor('#FFEEDD')
         buffer = BytesIO()
         fig.savefig(buffer)
         plot_data = buffer.getvalue()
