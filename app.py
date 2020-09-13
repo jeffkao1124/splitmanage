@@ -157,9 +157,9 @@ def index():
 
         # X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
         # C, S = np.cos(X), np.sin(X)
-        plt.rcParams['figure.dpi'] = 300  # 分辨率
+        # plt.rcParams['figure.dpi'] = 300  # 分辨率
         plt.rcParams['savefig.dpi'] = 300  # 图片像素
-        plt.rcParams['figure.figsize'] = (2.0, 1.0)  # 设置figure_size尺寸800x400
+        plt.rcParams['figure.figsize'] = (1.0, 1.0)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         plt.rcParams["font.family"]="DejaVu Sans"
