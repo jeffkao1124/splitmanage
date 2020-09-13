@@ -160,8 +160,8 @@ def index():
         plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(3,2.25))
         plt.rcParams['savefig.dpi'] = 100  # 图片像素
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
-        plt.xticks(fontsize=10)
-        plt.yticks(fontsize=10)
+        plt.xticks(fontsize=8)
+        plt.yticks(fontsize=8)
         # plt.rcParams['font.sas-serig']=['SimHei']
         # plt.rcParams['axes.unicode_minus']=False
         plt.rcParams["font.family"]="SimHei"
