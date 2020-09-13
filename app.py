@@ -159,7 +159,7 @@ def index():
         # C, S = np.cos(X), np.sin(X)
         # plt.rcParams['figure.dpi'] = 300  # 分辨率
         plt.rcParams['axes.facecolor'] = '#FFEEDD'
-        plt.rcParams['patch.edgecolor'] = '#FFEEDD'
+        plt.rcParams['axes.edgecolor'] = '#FFEEDD'
         plt.rcParams['savefig.dpi'] = 200  # 图片像素
         plt.rcParams['figure.figsize'] = (1.8, 1.5)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
