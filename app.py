@@ -162,7 +162,7 @@ def index():
 
         settle = result.split()
 
-        #plt.rcParams['figure.dpi'] = 300  # 分辨率
+        plt.rcParams['figure.dpi'] = 100  # 分辨率
         # plt.rcParams['axes.facecolor'] = '#FFEEDD'
         plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(3,2.25))
         plt.rcParams['savefig.dpi'] = 100  # 图片像素
