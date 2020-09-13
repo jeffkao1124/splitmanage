@@ -170,7 +170,6 @@ def index():
         plt.ylabel('Amount',fontsize=5)
         plt.bar(person_list,changeArray,width=0.5,color='red')
 
-        plt.set_facecolor('#FFEEDD')
         buffer = BytesIO()
         plt.savefig(buffer)
         plot_data = buffer.getvalue()
