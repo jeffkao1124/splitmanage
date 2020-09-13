@@ -157,16 +157,16 @@ def index():
 
         #plt.rcParams['figure.dpi'] = 300  # 分辨率
         # plt.rcParams['axes.facecolor'] = '#FFEEDD'
-        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(4,3))
+        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(3,2.25))
         plt.rcParams['savefig.dpi'] = 100  # 图片像素
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
-        plt.xticks(fontsize=5)
-        plt.yticks(fontsize=5)
+        plt.xticks(fontsize=10)
+        plt.yticks(fontsize=10)
         # plt.rcParams['font.sas-serig']=['SimHei']
         # plt.rcParams['axes.unicode_minus']=False
         plt.rcParams["font.family"]="SimHei"
-        plt.xlabel('Person List',fontsize=5)
-        plt.ylabel('Amount',fontsize=5)
+        plt.xlabel('Person List',fontsize=10)
+        plt.ylabel('Amount',fontsize=10)
         plt.bar(person_list,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
