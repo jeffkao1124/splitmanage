@@ -159,17 +159,14 @@ def index():
         # C, S = np.cos(X), np.sin(X)
         #plt.rcParams['figure.dpi'] = 100  # 分辨率
         #plt.rcParams['savefig.dpi'] = 100  # 图片像素
-        plt.rcParams['figure.figsize'] = (8.0, 4.0)  # 设置figure_size尺寸800x400
+        plt.rcParams['figure.figsize'] = (4.0, 2.0)  # 设置figure_size尺寸800x400
 
-        plt.xticks(fontsize=10)
-        plt.yticks(fontsize=10)
+        plt.xticks(fontsize=5)
+        plt.yticks(fontsize=5)
         plt.rcParams["font.family"]="DejaVu Sans"
-        plt.xlabel('Person List',fontsize=20)
-        plt.ylabel('Amount',fontsize=20)
-        plt.bar(person_list,changeArray)
-        plt.title("TEST",fontsize=25)
-        # plt.plot(X, C)
-        # plt.plot(X, S)
+        plt.xlabel('Person List',fontsize=10)
+        plt.ylabel('Amount',fontsize=10)
+        plt.bar(person_list,changeArray,width=0.8,color='red')
 
         buffer = BytesIO()
         plt.savefig(buffer)
