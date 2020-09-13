@@ -155,11 +155,11 @@ def index():
 
         settle = result.split()
 
-        # plt.rcParams['figure.dpi'] = 300  # 分辨率
+        #plt.rcParams['figure.dpi'] = 300  # 分辨率
         # plt.rcParams['axes.facecolor'] = '#FFEEDD'
         plt.figure(facecolor='#FFEEDD',edgecolor='black')
         plt.rcParams['savefig.dpi'] = 100  # 图片像素
-        plt.rcParams['figure.figsize'] = (1.8, 1.5)  # 设置figure_size尺寸800x400
+        plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         # plt.rcParams['font.sas-serig']=['SimHei']
