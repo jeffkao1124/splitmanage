@@ -170,10 +170,9 @@ def index():
         plt.ylabel('Amount',fontsize=5)
         plt.bar(person_list,changeArray,width=0.5,color='red')
 
-        fig = plt.figure()
-        fig.patch.set_facecolor('#FFEEDD')
+        plt.patch.set_facecolor('#FFEEDD')
         buffer = BytesIO()
-        fig.savefig(buffer)
+        plt.savefig(buffer)
         plot_data = buffer.getvalue()
         # 将matplotlib图片转换为HTML
         imb = base64.b64encode(plot_data)  # 对plot_data进行编码
