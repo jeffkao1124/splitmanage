@@ -158,15 +158,14 @@ def index():
         # X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
         # C, S = np.cos(X), np.sin(X)
         # plt.rcParams['figure.dpi'] = 300  # 分辨率
-        plt.rcParams['axes.facecolor'] = '#FFEEDD'
-        fig.patch.set_facecolor('#FFEEDD')
+        plt.rcParams['facecolor'] = '#FFEEDD'
         plt.rcParams['savefig.dpi'] = 200  # 图片像素
         plt.rcParams['figure.figsize'] = (1.8, 1.5)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         plt.rcParams['font.sas-serig']=['SimHei']
         plt.rcParams['axes.unicode_minus']=False
-        # plt.rcParams["font.family"]="DejaVu Sans"
+        # plt.rcParams["font.family"]="SimHei"
         plt.xlabel('Person List',fontsize=5)
         plt.ylabel('Amount',fontsize=5)
         plt.bar(person_list,changeArray,width=0.5,color='red')
