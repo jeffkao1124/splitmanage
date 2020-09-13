@@ -6,7 +6,8 @@ from sqlalchemy import desc
 from flask import render_template
 import numpy as np
 import sys
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
+from matplotlib.font_manager import FontProperties
 import base64
 from io import BytesIO
 
@@ -153,13 +154,21 @@ def index():
 
         settle = result.split()
 
-        X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
-        C, S = np.cos(X), np.sin(X)
+        # X = np.linspace(-np.pi, np.pi, 256, endpoint=True)  # -π to+π的256个值
+        # C, S = np.cos(X), np.sin(X)
         #plt.rcParams['figure.dpi'] = 100  # 分辨率
         #plt.rcParams['savefig.dpi'] = 100  # 图片像素
         plt.rcParams['figure.figsize'] = (8.0, 4.0)  # 设置figure_size尺寸800x400
-        plt.plot(X, C)
-        plt.plot(X, S)
+
+        plt.xticks(fontsize=10)
+        plt.yticks(fontsize=10)
+        plt.rcParams["font.family"]="DejaVu Sans"
+        plt.xlabel('Person List',fontsize=20)
+        plt.ylabel('Amount',fontsize=20)
+        plt.bar(person_list,account)
+        plt.title("TEST",fontsize=25)
+        # plt.plot(X, C)
+        # plt.plot(X, S)
 
         buffer = BytesIO()
         plt.savefig(buffer)
