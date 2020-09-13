@@ -12,5 +12,4 @@ jinja2
 datetime
 numpy
 matplotlib
-js-base64
 io
