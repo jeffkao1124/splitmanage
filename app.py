@@ -164,12 +164,12 @@ def index():
 
         plt.rcParams['figure.dpi'] = 200  # 分辨率
         # plt.rcParams['axes.facecolor'] = '#FFEEDD'
-        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.3,1.875))
+        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
         plt.rcParams['savefig.dpi'] = 150  # 图片像素
         #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
         plt.xticks(fontsize=7)
-        plt.yticks(fontsize=6)
+        plt.yticks(fontsize=5)
         my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
         plt.xticks(my_x_ticks)
         # plt.rcParams['font.sas-serig']=['SimHei']
