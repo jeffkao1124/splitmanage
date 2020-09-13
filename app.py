@@ -168,13 +168,15 @@ def index():
         plt.rcParams['savefig.dpi'] = 100  # 图片像素
         #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
-        plt.xticks(fontsize=8)
-        plt.yticks(fontsize=8)
+        plt.xticks(fontsize=6)
+        plt.yticks(fontsize=6)
+        my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
+        plt.xticks(my_x_ticks)
         # plt.rcParams['font.sas-serig']=['SimHei']
         # plt.rcParams['axes.unicode_minus']=False
         plt.rcParams["font.family"]="SimHei"
-        plt.xlabel('Person List',fontsize=10)
-        plt.ylabel('Amount',fontsize=10)
+        # plt.xlabel('Person List',fontsize=10)
+        # plt.ylabel('Amount',fontsize=10)
         plt.bar(numberlist,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
