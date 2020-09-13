@@ -92,8 +92,6 @@
         </tbody>
     </table><br/>
     <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp代墊與欠款統計：</strong></p>
-    <p><strong>{{ warning }}</strong></p>
-    <br/>
     {% for list in showlist %}
     <p>{{ list }}</p>
     {% endfor %}
@@ -101,7 +99,7 @@
     <p>
         <img src="{{ img }}">
     </p>
-
+    <p><strong>{{ warning }}</strong></p>
     <br/>
     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp結算：</strong></p>
     {% for list in settle %}

@@ -79,9 +79,11 @@ def index():
 
         person_list  = get_groupPeople(groupId,2)
         showlist=[]
+        numberlist=[]
         for i in range(get_groupPeople(groupId,1)):
             result=str(i+1)+'.'+str(person_list[i])
             showlist.append(result)
+            numberlist.append(i+1)
 
         dataNumber=count
         Zero= np.zeros((dataNumber,get_groupPeople(groupId,1)))
@@ -173,7 +175,7 @@ def index():
         plt.rcParams["font.family"]="SimHei"
         plt.xlabel('Person List',fontsize=10)
         plt.ylabel('Amount',fontsize=10)
-        plt.bar(person_list,changeArray,width=0.5,color='red')
+        plt.bar(numberlist,changeArray,width=0.5,color='red')
 
         buffer = BytesIO()
         plt.savefig(buffer)
