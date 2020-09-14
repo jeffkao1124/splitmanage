@@ -34,7 +34,6 @@ class usermessage(db.Model):
     birth_date = db.Column(db.TIMESTAMP)
 
 
-
 def get_groupPeople(groupId,mode):
     SetMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
     data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
