@@ -149,6 +149,8 @@ def index():
 
         replaceZero=Zero
         totalPayment=replaceZero.sum(axis=0)
+        print(totalPayment)
+        sys.stdout.flush()
 
         paid= np.zeros((1,len(get_groupPeople(groupId,2))))
         
@@ -167,8 +169,10 @@ def index():
                 for i in range(len(get_groupPeople(groupId,2))):
                     if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
                         paid[0][i]+=exchange_rate*int(b['account'])
-
+        print(paid)
+        sys.stdout.flush()
         account=paid-totalPayment
+
         changeArray=np.array(account.flatten())
 
         #將人和錢結合成tuple，存到一個空串列
