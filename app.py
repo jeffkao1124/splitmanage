@@ -11,6 +11,7 @@ from matplotlib.font_manager import FontProperties
 import base64
 from io import BytesIO
 import requests
+import BeautifulSoup
 
 app=Flask(__name__)
 app.config[
