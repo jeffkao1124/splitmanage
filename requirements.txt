@@ -12,3 +12,4 @@ jinja2
 datetime
 numpy
 matplotlib
+requests
