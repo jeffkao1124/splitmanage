@@ -175,15 +175,6 @@ def index():
 
         changeArray=np.array(account.flatten())
 
-                payAmount = exchange_rate * int(b['Account']) / len(GroupPeopleString)
-                a1=set(person_list)      #分帳設定有的人
-                a2=set(GroupPeopleString)
-                duplicate = list(a1.intersection(a2))       #a1和a2重複的人名
-                for j in range(len(duplicate)):      #分帳金額
-                    place=person_list.index(duplicate[j])
-                    account[place] -= payAmount
-                    
-
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
         for i in range(len(person_list)):
