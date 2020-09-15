@@ -156,7 +156,7 @@ def index():
         
         for j in range(len(save_list)):
             b=dict(save_list[j])
-            GroupPeopleString=b['group_num'].split(' ')
+            GroupPeopleString=b['group_num'].strip(' ').split(' ')
              #匯率轉換
             if 'USD' in b['message']:   
                 exchange_rate = get_exchangeRate(1)
@@ -166,14 +166,23 @@ def index():
                 exchange_rate = get_exchangeRate(3)
             else:
                 exchange_rate = 1
-                for i in range(len(get_groupPeople(groupId,2))):
-                    if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
-                        paid[0][i]+=exchange_rate*int(b['account'])
+            for i in range(len(get_groupPeople(groupId,2))):
+                if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
+                    paid[0][i]+=exchange_rate*int(b['account'])
         print(paid)
         sys.stdout.flush()
         account=paid-totalPayment
 
         changeArray=np.array(account.flatten())
+
+                payAmount = exchange_rate * int(b['Account']) / len(GroupPeopleString)
+                a1=set(person_list)      #分帳設定有的人
+                a2=set(GroupPeopleString)
+                duplicate = list(a1.intersection(a2))       #a1和a2重複的人名
+                for j in range(len(duplicate)):      #分帳金額
+                    place=person_list.index(duplicate[j])
+                    account[place] -= payAmount
+                    
 
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
