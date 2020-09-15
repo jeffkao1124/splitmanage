@@ -10,6 +10,7 @@ from matplotlib import pyplot as plt
 from matplotlib.font_manager import FontProperties
 import base64
 from io import BytesIO
+import requests
 
 app=Flask(__name__)
 app.config[
@@ -34,7 +35,6 @@ class usermessage(db.Model):
     birth_date = db.Column(db.TIMESTAMP)
 
 
-
 def get_groupPeople(groupId,mode):
     SetMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
     data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
@@ -51,6 +51,44 @@ def get_groupPeople(groupId,mode):
     else:
         return 0
 
+def get_exchangeRate(mode):
+    numb= []
+    cate=[]
+    data=[]
+    url_1= "https://rate.bot.com.tw/xrt?Lang=zh-TW"
+    resp_1 = requests.get(url_1)
+    ms = BeautifulSoup(resp_1.text,"html.parser")
+
+    t1=ms.find_all("td","rate-content-cash text-right print_hide")
+    for child in t1:
+        numb.append(child.text.strip())
+
+    buy=numb[0:37:2]
+    sell=numb[1:38:2]
+
+    t2=ms.find_all("div","hidden-phone print_show")
+    for child in t2:
+        cate.append(child.text.strip())
+    for i in range(19):
+        data.append([cate[i] +'買入：'+buy[i]+ '賣出：'+sell[i]])
+
+    if mode==1:
+        USD = data[0][0]
+        regex = re.compile(r'賣出：(\d+.*\d*)')
+        match = regex.search(USD)
+        return eval(match.group(1))
+    elif mode==2:
+        JPY = data[7][0]
+        regex = re.compile(r'賣出：(\d+.*\d*)')
+        match = regex.search(JPY)
+        return eval(match.group(1))
+    elif mode==3:
+        EUR = data[14][0]
+        regex = re.compile(r'賣出：(\d+.*\d*)')
+        match = regex.search(EUR)
+        return eval(match.group(1))
+    else:
+        return 1
 
 @app.route('/',methods=['POST','GET'])
 def index():
@@ -85,7 +123,18 @@ def index():
             b=dict(save_list[i])
             GroupPeopleString=b['group_num'].split(' ')
             del GroupPeopleString[0]
-            payAmount=int(b['account'])/len(GroupPeopleString)
+
+            #匯率轉換
+            if 'USD' in b['message']:   
+                exchange_rate =  get_exchangeRate(1)
+            elif 'JPY' in b['message']:
+                exchange_rate = get_exchangeRate(2)
+            elif 'EUR' in b['message']:
+                exchange_rate = get_exchangeRate(3)
+            else:
+                exchange_rate = 1
+
+            payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
             a1=set(get_groupPeople(groupId,2))
             a2=set(GroupPeopleString)
             duplicate = list(a1.intersection(a2))
@@ -99,15 +148,22 @@ def index():
         totalPayment=replaceZero.sum(axis=0)
 
         paid= np.zeros((1,len(get_groupPeople(groupId,2))))
-        for i in range(len(get_groupPeople(groupId,2))):
-            for j in range(len(save_list)):
-                b=dict(save_list[j])
-                GroupPeopleString=b['group_num'].split(' ')
-                if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
-                    paidAmount=int(b['account'])
-                    paid[0][i]=paid[0][i]+paidAmount
-                else:
-                    continue
+        
+        for j in range(len(save_list)):
+            b=dict(save_list[j])
+            GroupPeopleString=b['group_num'].split(' ')
+             #匯率轉換
+            if 'USD' in b['message']:   
+                exchange_rate = get_exchangeRate(1)
+            elif 'JPY' in b['message']:
+                exchange_rate = get_exchangeRate(2)
+            elif 'EUR' in b['message']:
+                exchange_rate = get_exchangeRate(3)
+            else:
+                exchange_rate = 1
+                for i in range(len(get_groupPeople(groupId,2))):
+                    if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
+                        paid[0][i]+=exchange_rate*int(b['account'])
 
         account=paid-totalPayment
         changeArray=np.array(account.flatten())
