@@ -14,4 +14,3 @@ numpy
 matplotlib
 requests
 bs4
-re
