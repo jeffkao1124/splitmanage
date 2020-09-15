@@ -13,4 +13,4 @@ datetime
 numpy
 matplotlib
 requests
-BeautifulSoup
+bs4
