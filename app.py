@@ -84,7 +84,10 @@ def index():
             b=dict(save_list[i])
             GroupPeopleString=b['group_num'].split(' ')
             del GroupPeopleString[0]
-            payAmount=int(b['account'])/len(GroupPeopleString)
+            exchange_rate =1 #匯率轉換 
+            if 'JYP' in b['message']:
+                exchange_rate = 10
+            payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
             a1=set(get_groupPeople(groupId,2))
             a2=set(GroupPeopleString)
             duplicate = list(a1.intersection(a2))
@@ -102,11 +105,11 @@ def index():
             for j in range(len(save_list)):
                 b=dict(save_list[j])
                 GroupPeopleString=b['group_num'].split(' ')
+                exchange_rate =1 #匯率轉換 
+                if 'JYP' in b['message']:
+                    exchange_rate = 10
                 if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
-                    paidAmount=int(b['account'])
-                    paid[0][i]=paid[0][i]+paidAmount
-                else:
-                    continue
+                    paid[0][i]+=exchange_rate*int(b['account'])
 
         account=paid-totalPayment
         changeArray=np.array(account.flatten())
