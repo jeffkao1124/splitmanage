@@ -91,7 +91,8 @@
             {% endfor%}
         </tbody>
     </table><br/>
-    <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp代墊與欠款統計：(台幣計算)</strong></p>
+    <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp代墊與欠款統計：</strong></p>
+    <p>說明：以現在匯率換算</p><br/>
     <p align="left">&nbsp群組分帳人：</p>
     {% for list in showlist %}
     <p>{{ list }}</p>
@@ -101,7 +102,8 @@
     </p>
     <p>分帳者</p>
     <br/>
-    <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp結算：(台幣計算)</strong></p>
+    <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp結算：</strong></p>
+     <p>說明：以現在匯率換算</p><br/>
     {% for list in settle %}
     <p>{{ list }}</p>
     {% endfor %}
