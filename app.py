@@ -162,10 +162,10 @@ def index():
         print(paid)
         sys.stdout.flush()
         account=paid-totalPayment
-        place=account.index(max(account))
-        maxPerson=get_groupPeople(groupId,2)[place]
 
         changeArray=np.array(account.flatten())
+        maxPlace=account.index(max(changeArray))
+        maxPerson=get_groupPeople(groupId,2)[place]        
 
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
