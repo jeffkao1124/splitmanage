@@ -164,7 +164,7 @@ def index():
         account=paid-totalPayment
 
         changeArray=np.array(account.flatten())
-        maxNumber=max(changeArray)
+        maxNumber=np.max(changeArray)
         print(maxNumber)
         sys.stdout.flush()
         # maxPerson=get_groupPeople(groupId,2)[place]        
