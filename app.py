@@ -105,7 +105,6 @@ def index():
             save_dic['payPeople'] = payer
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
-            people_list.append(save_dic['payPeople'])
             save_list.append(save_dic)
             save_dic = {}
 
