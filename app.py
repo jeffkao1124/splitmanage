@@ -92,17 +92,22 @@ def index():
         data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
         save_dic = {}
         save_list = []
+        people_list = []
         count=0
         for _Data in data_SaveData:
             count+=1
             save_dic['number'] = count
+            if count==1:
+                payer='/'+ _Data.group_num
+            else:
+                payer=_Data.group_num
             save_dic['group_num'] = _Data.group_num
+            save_dic['payPeople'] = payer
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
+            people_list.append(save_dic['payPeople'])
             save_list.append(save_dic)
             save_dic = {}
-
-        search_list=save_list.insert(1,'/')
 
 
         person_list  = get_groupPeople(groupId,2)
