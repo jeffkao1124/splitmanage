@@ -97,7 +97,7 @@ def index():
         for _Data in data_SaveData:
             count+=1
             save_dic['number'] = count
-            if count==1:
+            if count==2:
                 payer='/'+ _Data.group_num
             else:
                 payer=_Data.group_num
