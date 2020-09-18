@@ -102,6 +102,9 @@ def index():
             save_list.append(save_dic)
             save_dic = {}
 
+        search_list=save_list.insert(1,'/')
+
+
         person_list  = get_groupPeople(groupId,2)
         showlist=[]
         numberlist=[]
