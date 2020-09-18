@@ -163,17 +163,17 @@ def index():
         sys.stdout.flush()
         account=paid-totalPayment
 
-        changeArray=np.array(account.flatten())
-        maxPlace=changeArray.index(max(changeArray))
-        maxPerson=get_groupPeople(groupId,2)[place]        
-        # maxPerson = '維修中'
+        # changeArray=np.array(account.flatten())
+        # maxPlace=changeArray.index(max(changeArray))
+        # maxPerson=get_groupPeople(groupId,2)[place]        
+        maxPerson = '維修中'
 
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
         for i in range(len(person_list)):
             zip_tuple=(person_list[i],account[0][i])
             person_account.append(zip_tuple)
-        print(person_account)
+        print("hi"+str(person_account))
         sys.stdout.flush()
 
         #重複執行交換動作
