@@ -163,7 +163,7 @@ def index():
         sys.stdout.flush()
         account=paid-totalPayment
 
-        # changeArray=np.array(account.flatten())
+        changeArray=np.array(account.flatten())
         # maxPlace=changeArray.index(max(changeArray))
         # maxPerson=get_groupPeople(groupId,2)[place]        
         maxPerson = '維修中'
