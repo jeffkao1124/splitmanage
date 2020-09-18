@@ -228,7 +228,9 @@ def index():
         plt.rcParams['savefig.dpi'] = 150  # 圖片像素
         #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
-        plt.grid(True,color = "#ededed") 
+        # plt.grid(True,color = "#ededed") 
+        axes = plt.gca()
+        axes.yaxis.grid(color = "#ededed")
         plt.xticks(fontsize=7)
         plt.yticks(fontsize=4)
         my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
