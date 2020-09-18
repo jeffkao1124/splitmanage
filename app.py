@@ -210,7 +210,7 @@ def index():
             person_account[0]=min_tuple
             person_account[-1]=max_tuple
         if SaveMsgNumber>=1:
-            warning=str(maxPerson)+'目前代墊最多!'+'\n'+str(minPerson)+'目前欠款最多!'
+            warning=str(maxPerson)+'目前代墊最多!'
         else:
             warning=''
 
@@ -225,7 +225,7 @@ def index():
         plt.yticks(fontsize=4)
         my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
         plt.xticks(my_x_ticks)
-
+        plt.grid(True) 
         plt.rcParams["font.family"]="SimHei"
         # plt.xlabel('Person List',fontsize=10)
         # plt.ylabel('Amount',fontsize=10)
