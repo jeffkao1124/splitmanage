@@ -165,7 +165,8 @@ def index():
 
         changeArray=np.array(account.flatten())
         maxNumber=np.max(changeArray)
-        print(maxNumber)
+        maxPlace=np.where(changeArray=maxNumber)
+        print(maxPlace)
         sys.stdout.flush()
         # maxPerson=get_groupPeople(groupId,2)[place]        
         maxPerson = '維修中'
