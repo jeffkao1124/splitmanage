@@ -164,20 +164,16 @@ def index():
         account=paid-totalPayment
 
         changeArray=np.array(account.flatten())
-        maxNumber=np.max(changeArray)
-        maxPlace=np.where(changeArray=maxNumber)
-        print(maxPlace)
-        sys.stdout.flush()
-        # maxPerson=get_groupPeople(groupId,2)[place]        
-        maxPerson = '維修中'
 
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
         for i in range(len(person_list)):
             zip_tuple=(person_list[i],account[0][i])
             person_account.append(zip_tuple)
-        print("hi"+str(person_account))
+        print(str(person_account))
         sys.stdout.flush()
+
+
 
         #重複執行交換動作
         result=""
@@ -188,6 +184,11 @@ def index():
             #找到最大、最小值
             min_tuple=person_account[0]
             max_tuple=person_account[-1]
+            #找到目前代墊最多的人
+            if i==0:
+                maxPerson=max_tuple[0]
+                minPerson=min_tuple[0]
+
             min=float(min_tuple[1])
             max=float(max_tuple[1])
 
@@ -209,7 +210,7 @@ def index():
             person_account[0]=min_tuple
             person_account[-1]=max_tuple
         if SaveMsgNumber>=1:
-            warning='下次不要再讓'+str(maxPerson)+'付錢啦!TA幫你們付很多了!'
+            warning=str(maxPerson)+'目前代墊最多!'+'\n'+str(minPerson)+'目前欠款最多!'
         else:
             warning=''
 
