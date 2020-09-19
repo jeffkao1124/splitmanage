@@ -155,11 +155,10 @@ def index():
 
 
         person_list  = get_groupPeople(groupId,2)
-        showlist=[]
         numberlist=[]
+        peopleResult=''
         for i in range(get_groupPeople(groupId,1)):
-            result=str(i+1)+'.'+str(person_list[i])
-            showlist.append(result)
+            peopleResult+=str(i+1)+'.'+str(person_list[i])+' '
             numberlist.append(i+1)
 
         dataNumber=count
@@ -270,7 +269,7 @@ def index():
         notsimplify=get_notsimplify()
 
         plt.rcParams['figure.dpi'] = 200  # 分辨率
-        plt.figure(facecolor='#f3e4c2',edgecolor='black',figsize=(2.5,1.875))
+        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
         plt.rcParams['savefig.dpi'] = 150  # 圖片像素
         #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
