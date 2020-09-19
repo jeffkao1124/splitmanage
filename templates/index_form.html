@@ -69,11 +69,28 @@
     border-left: 1em solid black }
 </style>
 
+<script type="text/javascript">
+//隱藏TR
+function hide_tr()
+{
+alert("hide");
+var result_style = document.getElementById('dyn_tr').style;
+result_style.display = 'none';
+}
+//顯示TR
+function show_tr()
+{
+alert("show");
+var result_style = document.getElementById('dyn_tr').style;
+result_style.display = 'table-row';
+}
+ 
+</script>
 <div align="center">
     <br><img style="float: center" src="https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/118564250_3916210075072856_4538250581291362262_o.jpg?_nc_cat=102&_nc_sid=8024bb&_nc_ohc=pVO1LBE3Ud4AX_-Wo67&_nc_ht=scontent-tpe1-1.xx&oh=e5e38d055d796ff155cec63810e9dec8&oe=5F74AE54" alt="logo" width="110" height="110"/></br><p></p><h3>Welcome to</h3></p><h3><span style="background-color: #914c53; color: #ffffff;">&nbsp Account Mastiff &nbsp</span></h3>
     <br/>
     <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp目前分帳清單：</strong></p>
-    <table width=82% style="border-collapse:collapse; border:2px #FFAF60 solid;" cellpadding="10" border='1'>
+    <table width=82% style="border-collapse:collapse; border:2px #FFAF60 solid; display: none;" cellpadding="10" border='1' id="dyn_tr" >
         <thead align="center">
             <th>編號</th>
             <th>項目</th>
@@ -91,6 +108,8 @@
             {% endfor%}
         </tbody>
     </table><br/>
+    <input type="button" value="Hide" onclick="hide_tr()">
+    <input type="button" value="Show" onclick="show_tr()">
     <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp代墊與欠款統計：</strong></p>
     <!-- <p>說明：以現在匯率換算</p><br/> -->
     <p align="left">&nbsp群組分帳人：</p>
