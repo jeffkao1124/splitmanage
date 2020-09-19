@@ -91,6 +91,19 @@ document.getElementById("btnhref").href ="javascript:divShow()";
 }
 </script>
 
+<script type="text/javascript">
+function div_show(){
+document.getElementById("btnshow").style.display="block";
+document.getElementById("btnhref").innerHTML ="隱藏簡化結算";
+document.getElementById("btnhref").href ="javascript:div_hidden()";
+}
+function div_hidden(){
+document.getElementById("btnshow").style.display="none";
+document.getElementById("btnhref").innerHTML ="簡化結算";
+document.getElementById("btnhref").href ="javascript:div_show()"; 
+}
+</script>
+
 <div align="center">
 <ul>
   <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
@@ -121,7 +134,7 @@ document.getElementById("btnhref").href ="javascript:divShow()";
     
     <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;"><strong> &nbsp代墊與欠款統計</strong></p>
     <!-- <p>說明：以現在匯率換算</p><br/> -->
-    <p align="left">&nbsp群組分帳人</p>
+    <p align="left">&nbsp群組分帳人：</p>
     {% for list in showlist %}
     <p>{{ list }}</p>
     {% endfor %}
@@ -131,13 +144,22 @@ document.getElementById("btnhref").href ="javascript:divShow()";
     <p>分帳者</p>
     <p style="font-color: red"><strong>{{warning}}</strong></p>
     <br/>
-    <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;"><strong>&nbsp結算</strong></p>
-     <!-- <p>說明：以現在匯率換算</p><br/> -->
+    <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;">
+    <strong>&nbsp結算</strong>
+    <a href="javascript:div_show();" id="btnhref">簡化結算</a>
+    </p>
+
+    <div>
+    {% for list in notsimplify %}
+    <p>{{list}}</p>
+     {% endfor %}
+    </div><br/>
+    <div id="btnshow" style="display: none;">
     {% for list in settle %}
     <p>{{ list }}</p>
     {% endfor %}
-    <br/>
-    <p>{{notsimplify}}</p>
+    </div><br/>
+
     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
     <script>
         function deleteOption(list){
