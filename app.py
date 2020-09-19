@@ -97,15 +97,28 @@ def index():
         for _Data in data_SaveData:
             count+=1
             save_dic['number'] = count
-            firstSpace=_Data.group_num.split(' ', 1 )
-            print(firstSpace)
-            sys.stdout.flush()
-            firstSpace[0]=firstSpace[0]+'/'
+            firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
+            firstSpace[0]=firstSpace[0]+' / '
             withoutSpace=firstSpace[0]+firstSpace[1]
             save_dic['group_num'] = _Data.group_num
             save_dic['payPeople'] = withoutSpace
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
+            if 'USD/' in _Data.message:
+                withoutcurr=_Data.message.strip("USD/")
+                Money='US$'+str(_Data.account)
+            elif 'JPY/' in _Data.message:
+                withoutcurr=_Data.message.strip("JPY/")
+                Money='¥'+str(_Data.account)                
+            elif 'EUR/' in _Data.message:
+                withoutcurr=_Data.message.strip("EUR/") 
+                Money='€'+str(_Data.account)          
+            else:
+                withoutcurr=_Data.message
+                Money=str(_Data.account)         
+            save_dic['clearMessage'] = withoutcurr
+            save_dic['withcurr'] = Money
+            save_dic[]
             save_list.append(save_dic)
             save_dic = {}
 
