@@ -7,44 +7,63 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script>
-        function initializeApp(data) {  //初始化LIFF
-            var userid = data.context.userId;
-            var groupid = data.context.groupId; //取得ID
-            document.getElementById('post_groupID').value =groupid;
+<script>
+	function initializeApp(data) {  //初始化LIFF
+        var userid = data.context.userId;
+        var groupid = data.context.groupId; //取得ID
+        document.getElementById('post_groupID').value =groupid;
+
+	}
+    function load(){
+    document.getElementById("post_groupID").click();
+    }
+
+	$(document).ready(function () {
     
-        }
-        function load(){
-        document.getElementById("post_groupID").click();
-        }
-    
-        $(document).ready(function () {
-        
-            liff.init(function (data) {  //初始化LIFF
-                initializeApp(data);
-                load();
-            });
-            
-        });
-    </script>
-    
-    </head>
-    <body>
-    <body style="background-color:#FFEEDD;"></body>
-    <style> 
-    .bt{background:#F0F0F0; width: 320px; height:30px; border-radius: 10px;} 
-    .bt span{ transition: 0.5s;}  /* 過渡0.5秒 */ 
-    .bt:hover span{ padding-right: 15px;}  /* 當滑鼠在按鈕上時span內邊右距離25px */ 
-    .bt span:after{ content: "»"; opacity: 0; /* 透明度為0 */ transition: 0.5s; /* 加個0.5秒的過渡 */ } 
-    .bt:hover span:after{ opacity: 1; /* 透明度為1，就是顯示 */ } 
-    </style>
-    <div align="center">
-        <br><img style="float: center" src="https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/118564250_3916210075072856_4538250581291362262_o.jpg?_nc_cat=102&_nc_sid=8024bb&_nc_ohc=pVO1LBE3Ud4AX_-Wo67&_nc_ht=scontent-tpe1-1.xx&oh=e5e38d055d796ff155cec63810e9dec8&oe=5F74AE54" alt="logo" width="110" height="110"/></br><p></p><h3>Welcome to</h3></p><h3><span style="background-color: #914c53; color: #ffffff;">&nbsp Account Mastiff &nbsp</span></h3>
-        <br/>
-        <form method='post' action="{{url_for ('index')}}">
-            <p><button id='post_groupID' type="hidden" name="groupId" value='0' onclick="test()" class="bt"> <span>正在載入頁面資料...</span> </button></p>
-        </form>
-        <br/>
-    </div>
-    </body>
-    </html>
+		liff.init(function (data) {  //初始化LIFF
+            initializeApp(data);
+            load();
+		});
+		
+	});
+</script>
+<style>
+    ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+
+}
+
+li {
+  float: left;
+  justify-content:center;
+}
+</style>
+</head>
+<body>
+<body style="background-color:#FFEEDD;"></body>
+<style> 
+.bt{background:#F0F0F0; width: 320px; height:30px; border-radius: 10px;} 
+.bt span{ transition: 0.5s;}  /* 過渡0.5秒 */ 
+.bt:hover span{ padding-right: 15px;}  /* 當滑鼠在按鈕上時span內邊右距離25px */ 
+.bt span:after{ content: "»"; opacity: 0; /* 透明度為0 */ transition: 0.5s; /* 加個0.5秒的過渡 */ } 
+.bt:hover span:after{ opacity: 1; /* 透明度為1，就是顯示 */ } 
+</style>
+<div align="center">
+    <ul>
+  <li>
+  <img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img>
+  </li>
+  <li>
+  <h1 style="line-height:100px;"><strong>查帳結算</strong></h1>
+</li>
+</ul>
+    <form method='post' action="{{url_for ('index')}}">
+        <p><button id='post_groupID' type="hidden" name="groupId" value='0' onclick="test()" class="bt" style="background-color: #fff9c4;"> <span>正在載入頁面資料...</span> </button></p>
+    </form>
+    <br/>
+</div>
+</body>
+</html>
