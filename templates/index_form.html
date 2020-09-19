@@ -115,7 +115,8 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <strong> &nbsp目前帳目</strong>
     <a href="javascript:divShow();" id="btnhref" class="btn-slide">展開清單</a>
     </p>
-    <table width=82% style="border-collapse:collapse; border:2px #FFAF60 solid; display: none;" cellpadding="10" border='1' id="btnshow" >
+    <div  style="display: none;" id="btnshow">
+    <table width=82% style="border-collapse:collapse; border:2px #FFAF60 solid; " cellpadding="10" border='1' >
         <thead align="center">
             <th>編號</th>
             <th>項目</th>
@@ -133,36 +134,7 @@ document.getElementById("simplehref").href ="javascript:div_show()";
             {% endfor%}
         </tbody>
     </table><br/>
-    
-    <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;"><strong> &nbsp代墊與欠款統計</strong></p>
-    <!-- <p>說明：以現在匯率換算</p><br/> -->
-    <p align="left">&nbsp群組分帳人：</p>
-    {% for list in showlist %}
-    <p>{{ list }}</p>
-    {% endfor %}
-    <p align="left">&nbsp金額(NTD)
-        <img src="{{ img }}" align="right" >
-    </p>
-    <p>分帳者</p>
-    <p style="font-color: red"><strong>{{warning}}</strong></p>
-    <br/>
-    <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;">
-    <strong>&nbsp結算</strong>
-    <a href="javascript:div_show();" id="simplehref">簡化結算</a>
-    </p>
-
-    <div id="notsimpleshow" style="display: block;">
-    {% for list in notsimplify %}
-    <p>{{list}}</p>
-     {% endfor %}
-    </div><br/>
-    <div id="simpleshow" style="display: none;">
-    {% for list in settle %}
-    <p>{{ list }}</p>
-    {% endfor %}
-    </div><br/>
-
-    <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
+     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
     <script>
         function deleteOption(list){
             var index=list.selectedIndex;
@@ -203,6 +175,36 @@ document.getElementById("simplehref").href ="javascript:div_show()";
         <br/>
         <input type="button" name="ok" id="delete" value="刪除所有資料"><br>
         <br/>
+    </div>
+    
+    <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;"><strong> &nbsp代墊與欠款統計</strong></p>
+    <!-- <p>說明：以現在匯率換算</p><br/> -->
+    <p align="left">&nbsp群組分帳人：</p>
+    {% for list in showlist %}
+    <p>{{ list }}</p>
+    {% endfor %}
+    <p align="left">&nbsp金額(NTD)
+        <img src="{{ img }}" align="right" >
+    </p>
+    <p>分帳者</p>
+    <p style="font-color: red"><strong>{{warning}}</strong></p>
+    <br/>
+    <p align="left" style="background-color:#fff8d9;font-size:20px;text-align: left;">
+    <strong>&nbsp結算</strong>
+    <a href="javascript:div_show();" id="simplehref">簡化結算</a>
+    </p>
+
+    <div id="notsimpleshow" style="display: block;">
+    {% for list in notsimplify %}
+    <p>{{list}}</p>
+     {% endfor %}
+    </div><br/>
+    <div id="simpleshow" style="display: none;">
+    {% for list in settle %}
+    <p>{{ list }}</p>
+    {% endfor %}
+    </div><br/>
+
 </div>
 </body>
 </html>
