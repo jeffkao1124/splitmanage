@@ -83,6 +83,37 @@ def get_exchangeRate(mode):
         EURrate=eval(history_dic['Mesaage'])
         return EURrate
 
+def get_notsimplify():
+    data_Settle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+    historySettle_list = [] 
+    person_list  = get_groupPeople(groupId,2)  #分帳設定人名
+    person_num = get_groupPeople(groupId,1)  #分帳設定人數
+    for _data in dataSettle_UserData: 
+        historySettle_dic = {} 
+        historySettle_dic['Account'] = _data.account 
+        historySettle_dic['GroupPeople'] =_data.group_num 
+        historySettle_list.append(historySettle_dic) 
+        
+    dataNumber=len(historySettle_list) 
+    account= np.zeros((person_num,person_num)) 
+    for i in range(dataNumber): 
+        b=dict(historySettle_list[i]) 
+        GroupPeopleString=b['GroupPeople'].split(' ')
+        payAmount = round( int(b['Account']) / (len(GroupPeopleString)-1),2)  #不包含代墊者
+        a1=set(person_list)      #分帳設定有的人 
+        a2=set(GroupPeopleString) 
+        duplicate = list(a1.intersection(a2))         #a1和a2重複的人名 
+        for j in range(len(duplicate)):      #誰付誰錢矩陣 2給1 
+            place1=person_list.index(GroupPeopleString[0]) 
+            place2=person_list.index(duplicate[j]) 
+            account[place1][place2]+=payAmount 
+    result=""
+    for i in range ( person_num ): #誰付誰錢輸出 
+        for j in range ( person_num ): 
+            if i!=j and account[i][j] != 0 : 
+                result += person_list[j]+'付給'+person_list[i] + str(account[i][j]) +'元'+'\n' 
+    return result
+
 @app.route('/',methods=['POST','GET'])
 def index():
     if request.method == 'POST':
@@ -235,6 +266,7 @@ def index():
             warning=''
 
         settle = result.split()
+        notsimplify=get_notsimplify()
 
         plt.rcParams['figure.dpi'] = 200  # 分辨率
         plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
