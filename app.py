@@ -238,7 +238,7 @@ def index():
         plt.rcParams["font.family"]="SimHei"
         # plt.xlabel('Person List',fontsize=10)
         # plt.ylabel('Amount',fontsize=10)
-        plt.bar(numberlist,changeArray,width=0.5,color='red')
+        plt.bar(numberlist,changeArray,width=0.5,color='#FFA042')
 
         buffer = BytesIO()
         plt.savefig(buffer)
