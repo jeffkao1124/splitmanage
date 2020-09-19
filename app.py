@@ -118,7 +118,6 @@ def index():
                 Money=str(_Data.account)         
             save_dic['clearMessage'] = withoutcurr
             save_dic['withcurr'] = Money
-            save_dic[]
             save_list.append(save_dic)
             save_dic = {}
 
