@@ -84,6 +84,7 @@ def get_exchangeRate(mode):
         return EURrate
 
 def get_notsimplify():
+    groupId = request.values['groupId']
     data_Settle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
     historySettle_list = [] 
     person_list  = get_groupPeople(groupId,2)  #分帳設定人名
