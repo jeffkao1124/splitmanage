@@ -106,7 +106,7 @@ def index():
             save_dic['message'] = _Data.message
             if 'USD/' in _Data.message:
                 withoutcurr=_Data.message.strip("USD/")
-                Money='US$'+str(_Data.account)
+                Money='$'+str(_Data.account)
             elif 'JPY/' in _Data.message:
                 withoutcurr=_Data.message.strip("JPY/")
                 Money='¥'+str(_Data.account)                
@@ -115,7 +115,7 @@ def index():
                 Money='€'+str(_Data.account)          
             else:
                 withoutcurr=_Data.message
-                Money=str(_Data.account)         
+                Money='NT$'+str(_Data.account)
             save_dic['clearMessage'] = withoutcurr
             save_dic['withcurr'] = Money
             save_list.append(save_dic)
