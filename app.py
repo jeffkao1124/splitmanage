@@ -108,11 +108,11 @@ def get_notsimplify():
             place1=person_list.index(GroupPeopleString[0]) 
             place2=person_list.index(duplicate[j]) 
             account[place1][place2]+=payAmount 
-    result=""
+    result=[]
     for i in range ( person_num ): #誰付誰錢輸出 
         for j in range ( person_num ): 
             if i!=j and account[i][j] != 0 : 
-                result += person_list[j]+'付給'+person_list[i] + str(account[i][j]) +'元'+'\n' 
+                result.append(person_list[j]+'付給'+person_list[i] + str(account[i][j]) +'元'+'\n' )
     return result
 
 @app.route('/',methods=['POST','GET'])
