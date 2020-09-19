@@ -94,11 +94,13 @@ document.getElementById("btnhref").href ="javascript:divShow()";
 <script type="text/javascript">
 function div_show(){
 document.getElementById("simpleshow").style.display="block";
-document.getElementById("simplehref").innerHTML ="隱藏簡化結算";
+document.getElementById("notsimpleshow").style.display="none";
+document.getElementById("simplehref").innerHTML ="不簡化結算";
 document.getElementById("simplehref").href ="javascript:div_hidden()";
 }
 function div_hidden(){
 document.getElementById("simpleshow").style.display="none";
+document.getElementById("notsimpleshow").style.display="block";
 document.getElementById("simplehref").innerHTML ="簡化結算";
 document.getElementById("simplehref").href ="javascript:div_show()"; 
 }
@@ -149,7 +151,7 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <a href="javascript:div_show();" id="simplehref">簡化結算</a>
     </p>
 
-    <div>
+    <div id="notsimpleshow" style="display: block;">
     {% for list in notsimplify %}
     <p>{{list}}</p>
      {% endfor %}
