@@ -112,7 +112,7 @@ def get_notsimplify():
     for i in range ( person_num ): #誰付誰錢輸出 
         for j in range ( person_num ): 
             if i!=j and account[i][j] != 0 : 
-                result.append(person_list[j]+'付給'+person_list[i] + str(account[i][j]) +'元'+'\n' )
+                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(account[i][j]))
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -270,7 +270,7 @@ def index():
         notsimplify=get_notsimplify()
 
         plt.rcParams['figure.dpi'] = 200  # 分辨率
-        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
+        plt.figure(facecolor='#f3e4c2',edgecolor='black',figsize=(2.5,1.875))
         plt.rcParams['savefig.dpi'] = 150  # 圖片像素
         #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
