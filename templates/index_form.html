@@ -73,14 +73,12 @@
 //隱藏TR
 function hide_tr()
 {
-alert("hide");
 var result_style = document.getElementById('dyn_tr').style;
 result_style.display = 'none';
 }
 //顯示TR
 function show_tr()
 {
-alert("show");
 var result_style = document.getElementById('dyn_tr').style;
 result_style.display = 'table-row';
 }
@@ -107,9 +105,9 @@ result_style.display = 'table-row';
                 </tr>
             {% endfor%}
         </tbody>
-    </table><br/>
-    <input type="button" value="Hide" onclick="hide_tr()">
-    <input type="button" value="Show" onclick="show_tr()">
+    </table>
+    <input type="button" value="隱藏" onclick="hide_tr()">
+    <input type="button" value="顯示" onclick="show_tr()">
     <p class="text-background" align="left" style="font-size:18px;"><strong> &nbsp代墊與欠款統計：</strong></p>
     <!-- <p>說明：以現在匯率換算</p><br/> -->
     <p align="left">&nbsp群組分帳人：</p>
