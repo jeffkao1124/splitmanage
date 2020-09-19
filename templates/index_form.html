@@ -180,9 +180,7 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp代墊與欠款統計</strong></p>
     <!-- <p>說明：以現在匯率換算</p><br/> -->
     <p align="left">&nbsp群組分帳人：</p>
-    {% for list in showlist %}
-    <p>{{ list }}</p>
-    {% endfor %}
+    <p>{{ peopleResult }}</p>
     <p align="left">&nbsp金額(NTD)
         <img src="{{ img }}" align="right" >
     </p>
