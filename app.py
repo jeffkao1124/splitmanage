@@ -97,12 +97,13 @@ def index():
         for _Data in data_SaveData:
             count+=1
             save_dic['number'] = count
-            if count==1:
-                payer= _Data.group_num
-            else:
-                payer=_Data.group_num
+            firstSpace=_Data.group_num.split(' ', 1 )
+            print(firstSpace)
+            sys.stdout.flush()
+            firstSpace[0]=firstSpace[0]+'/'
+            withoutSpace=firstSpace[0]+firstSpace[1]
             save_dic['group_num'] = _Data.group_num
-            save_dic['payPeople'] = payer
+            save_dic['payPeople'] = withoutSpace
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
             save_list.append(save_dic)
@@ -241,9 +242,9 @@ def index():
         colors=[]
         for _data in changeArray:
             if _data>0:
-                colors.append('blue')
+                colors.append('#FFA042')
             else:
-                colors.append("#FFA042")
+                colors.append("#FF5151")
         plt.bar(numberlist,changeArray,width=0.5,color=colors)
 
         buffer = BytesIO()
