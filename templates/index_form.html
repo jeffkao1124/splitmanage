@@ -273,31 +273,6 @@ document.getElementById("simplehref").innerHTML ="簡化結算";
 document.getElementById("simplehref").href ="javascript:div_show()"; 
 }
 </script>
-  <script>
-    var ctx=$('#myChart');
-    var myChart=new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['U1', 'U2', 'U3','U4','U5'],
-        datasets: [{
-          label: '代墊與欠款柱狀圖',
-          data: [60, 49, 72 ,-20,-80],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)'
-          ],
-          borderWidth: 1
-          }]
-        }
-      });
-  </script>
 
 <div align="center">
 <ul>
@@ -383,13 +358,31 @@ document.getElementById("simplehref").href ="javascript:div_show()";
   <div style="width: 400px; height: 300px">
     <canvas id="myChart"></canvas>
   </div>
-
-
-
-
-
-
-
+  <script>
+    var ctx=$('#myChart');
+    var myChart=new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['U1','U2', 'U3','U4','U5'],
+        datasets: [{
+          label: '代墊與欠款柱狀圖',
+          data: [60, 49, 72 ,-20,-80],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)'
+          ],
+          borderColor: [
+            'rgba(255,99,132,1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)'
+          ],
+          borderWidth: 1
+          }]
+        }
+      });
+  </script>
 
 
 
