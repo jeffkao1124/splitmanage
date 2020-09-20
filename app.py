@@ -127,7 +127,7 @@ def get_notsimplify():
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
-                result+=(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2))+'\n'
+                result+=(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2),2)+'\n'
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -148,13 +148,13 @@ def index():
             save_dic['payPeople'] = withoutSpace
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
-            if 'USD/' in _Data.message:
+            if 'USD' in _Data.message:
                 withoutcurr=_Data.message.strip("USD/")
                 Money='$'+str(_Data.account)
-            elif 'JPY/' in _Data.message:
+            elif 'JPY' in _Data.message:
                 withoutcurr=_Data.message.strip("JPY/")
                 Money='¥'+str(_Data.account)                
-            elif 'EUR/' in _Data.message:
+            elif 'EUR' in _Data.message:
                 withoutcurr=_Data.message.strip("EUR/") 
                 Money='€'+str(_Data.account)          
             else:
