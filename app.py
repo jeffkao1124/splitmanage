@@ -155,7 +155,7 @@ def index():
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
             del GroupPeopleString[0]
 
-           if 'USD' in b['message']:
+            if  'USD' in b['message']:
                 if exchange_rate_USD:
                     exchange_rate = exchange_rate_USD
                 else:
