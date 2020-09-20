@@ -363,10 +363,10 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     var myChart=new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: ['U1','U2', 'U3','U4','U5'],
+        labels: {{person_list}},
         datasets: [{
           label: '代墊與欠款柱狀圖',
-          data: [60, 49, 72 ,-20,-80],
+          data: {{account}},
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
