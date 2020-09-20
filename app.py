@@ -155,7 +155,7 @@ def index():
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
             del GroupPeopleString[0]
 
-           if 'USD' in b['message']:   #匯率轉換
+           if 'USD' in b['message']:     #匯率轉換
                 if exchange_rate_USD:
                     exchange_rate = exchange_rate_USD
                 else:
@@ -188,7 +188,7 @@ def index():
         for j in range(len(save_list)):
             b=dict(save_list[j])
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
-            if 'USD' in b['message']:   #匯率轉換
+            if 'USD' in b['message']:       #匯率轉換
                 if exchange_rate_USD:
                     exchange_rate = exchange_rate_USD
                 else:
