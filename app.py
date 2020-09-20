@@ -270,37 +270,37 @@ def index():
         settle = result.split()
         notsimplify=get_notsimplify()
 
-        plt.rcParams['figure.dpi'] = 200  # 分辨率
-        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
-        plt.rcParams['savefig.dpi'] = 150  # 圖片像素
+        # plt.rcParams['figure.dpi'] = 200  # 分辨率
+        # plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
+        # plt.rcParams['savefig.dpi'] = 150  # 圖片像素
         #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
         # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
         # plt.grid(True,color = "#ededed") 
-        axes = plt.gca()
-        axes.yaxis.grid(color = "#ededed")
-        plt.xticks(fontsize=7)
-        plt.yticks(fontsize=4)
-        my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
-        plt.xticks(my_x_ticks)
-        plt.rcParams["font.family"]="SimHei"
+        # axes = plt.gca()
+        # axes.yaxis.grid(color = "#ededed")
+        # plt.xticks(fontsize=7)
+        # plt.yticks(fontsize=4)
+        # my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
+        # plt.xticks(my_x_ticks)
+        # plt.rcParams["font.family"]="SimHei"
         # plt.xlabel('Person List',fontsize=10)
         # plt.ylabel('Amount',fontsize=10)
-        colors=[]
-        for _data in changeArray:
-            if _data>0:
-                colors.append('#FFA042')
-            else:
-                colors.append("#FF5151")
-        plt.bar(numberlist,changeArray,width=0.5,color=colors)
+        # colors=[]
+        # for _data in changeArray:
+        #     if _data>0:
+        #         colors.append('#FFA042')
+        #     else:
+        #         colors.append("#FF5151")
+        # plt.bar(numberlist,changeArray,width=0.5,color=colors)
 
-        buffer = BytesIO()
-        plt.savefig(buffer)
-        plot_data = buffer.getvalue()
-        # 將matplotlib圖片轉換為HTML
-        imb = base64.b64encode(plot_data)  # 對plot_data進行編碼
-        ims = imb.decode()
-        imd = "data:image/png;base64," + ims
-        img = imd
+        # buffer = BytesIO()
+        # plt.savefig(buffer)
+        # plot_data = buffer.getvalue()
+        # # 將matplotlib圖片轉換為HTML
+        # imb = base64.b64encode(plot_data)  # 對plot_data進行編碼
+        # ims = imb.decode()
+        # imd = "data:image/png;base64," + ims
+        # img = imd
         
         return render_template('index_form.html',**locals())
 
