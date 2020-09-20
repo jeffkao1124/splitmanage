@@ -85,10 +85,35 @@ def get_notsimplify():
         
     dataNumber=len(historySettle_list) 
     account= np.zeros((person_num,person_num)) 
+    exchange_rate_USD = 0
+    exchange_rate_JPY = 0
+    exchange_rate_EUR = 0
     for i in range(dataNumber): 
         b=dict(historySettle_list[i]) 
         GroupPeopleString=b['GroupPeople'].split(' ')
-        payAmount = round( int(b['Account']) / (len(GroupPeopleString)-1),2)  #不包含代墊者
+
+        if  'USD' in b['message']:
+            if exchange_rate_USD:
+                exchange_rate = exchange_rate_USD
+            else:
+                exchange_rate_USD = get_exchangeRate(1)
+                exchange_rate = exchange_rate_USD
+        elif 'JPY' in b['message']:
+            if exchange_rate_JPY:
+                exchange_rate = exchange_rate_JPY
+            else:
+                exchange_rate_JPY = get_exchangeRate(2)
+                exchange_rate = exchange_rate_JPY
+        elif 'EUR' in b['message']:
+            if exchange_rate_EUR:
+                exchange_rate = exchange_rate_EUR
+            else:
+                exchange_rate_EUR = get_exchangeRate(3)
+                exchange_rate = exchange_rate_EUR
+        else:
+            exchange_rate = 1
+
+        payAmount =exchange_rate*int(b['Account']) / (len(GroupPeopleString)-1)#不包含代墊者
         a1=set(person_list)      #分帳設定有的人 
         a2=set(GroupPeopleString) 
         duplicate = list(a1.intersection(a2))         #a1和a2重複的人名 
@@ -101,7 +126,7 @@ def get_notsimplify():
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
-                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(payAmount))
+                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,1))
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -171,7 +196,7 @@ def index():
                 if exchange_rate_EUR:
                     exchange_rate = exchange_rate_EUR
                 else:
-                    exchange_rate_EUR = get_exchangeRate(1)
+                    exchange_rate_EUR = get_exchangeRate(3)
                     exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
@@ -204,7 +229,7 @@ def index():
                 if exchange_rate_EUR:
                     exchange_rate = exchange_rate_EUR
                 else:
-                    exchange_rate_EUR = get_exchangeRate(1)
+                    exchange_rate_EUR = get_exchangeRate(3)
                     exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
