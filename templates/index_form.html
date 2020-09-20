@@ -73,6 +73,18 @@ li {
   float: left;
   justify-content:center;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {background-color: #f2f2f2;}
+
 </style>
 </head>
 <body>
@@ -116,7 +128,7 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <a href="javascript:divShow();" id="btnhref" class="btn-slide">展開清單</a>
     </p>
     <div  style="display: none;" id="btnshow">
-    <table width=82% style="border-collapse:collapse; border:2px #FFAF60 solid; " cellpadding="10" border='1' >
+    <table>
         <thead align="center">
             <th>編號</th>
             <th>項目</th>
