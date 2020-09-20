@@ -39,7 +39,6 @@ class usermessage(db.Model):
 
 
 def get_groupPeople(groupId,mode):
-    SetMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
     data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
     GroupPeopleString=''
     for _data in data_UserData:
@@ -54,33 +53,22 @@ def get_groupPeople(groupId,mode):
     else:
         return 0
 
+#從資料庫取得匯率
 def get_exchangeRate(mode):
     if mode==1:
         data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='USD' ).limit(1).all()
-        history_dic = {}
-        history_list = []
         for _data in data_UserData:
-            history_dic['Mesaage'] = _data.message
-            history_list.append(history_dic)
-        USDrate=eval(history_dic['Mesaage'])
+            USDrate = eval(_data.message)
         return USDrate
     if mode==2:
         data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='JPY' ).limit(1).all()
-        history_dic = {}
-        history_list = []
         for _data in data_UserData:
-            history_dic['Mesaage'] = _data.message
-            history_list.append(history_dic)
-        JPYrate=eval(history_dic['Mesaage'])
+            JPYrate=eval(_data.message)
         return JPYrate
     if mode==3:
         data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='EUR' ).limit(1).all()
-        history_dic = {}
-        history_list = []
         for _data in data_UserData:
-            history_dic['Mesaage'] = _data.message
-            history_list.append(history_dic)
-        EURrate=eval(history_dic['Mesaage'])
+            EURrate=eval(_data.message)
         return EURrate
 
 def get_notsimplify():
@@ -111,8 +99,9 @@ def get_notsimplify():
     result=[]
     for i in range ( person_num ): #誰付誰錢輸出 
         for j in range ( person_num ): 
-            if i!=j and account[i][j] != 0 : 
-                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(account[i][j]))
+            payAmount = account[i][j] - account[j][i]
+            if ( payAmount<0 ):
+                result.append(person_list[i]+'付給'+person_list[j] +'NT$' +str(account[i][j]))
     return result
 
 @app.route('/',methods=['POST','GET'])
