@@ -238,7 +238,9 @@ def index():
             for i in range(person_num):  
                 if GroupPeopleString[0] ==  person_list[i]:
                     account[i] += exchange_rate * int(b['account'])
-
+        account = list(account)
+        print(account)
+        sys.stdout.flush()
         changeArray=np.array(account.flatten())
 
         #將人和錢結合成tuple，存到一個空串列
