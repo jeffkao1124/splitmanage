@@ -1,381 +1,811 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
-    <title>查帳小幫手</title>
-    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script>
-        function print_value() {
+from flask import Flask, request, abort
 
-            document.getElementById("result") = document.getElementById("number").value
-        }
-</script>
-<script>
-	function initializeApp(data) {  //初始化LIFF
-        var userid = data.context.userId;
-        var groupid = data.context.groupId; //取得ID
-        document.getElementById('post_groupID').value = groupid;
+from linebot import (
+    LineBotApi, WebhookHandler
+)
+from linebot.exceptions import (
+    InvalidSignatureError
+)
+from linebot.models import (
+    SourceUser,SourceGroup,SourceRoom,LeaveEvent,JoinEvent,
+    TemplateSendMessage,ButtonsTemplate,CarouselTemplate,CarouselColumn,
+    MessageTemplateAction,URITemplateAction,PostbackEvent,AudioMessage,LocationMessage,
+    MessageEvent, TextMessage, TextSendMessage ,FollowEvent, UnfollowEvent
+)
 
-	}
-	function closewin() {
+from linebot import (LineBotApi, WebhookHandler)
+from linebot.exceptions import (InvalidSignatureError)
+from linebot.models import *
 
-        liff.closeWindow();
+import requests
+from bs4 import BeautifulSoup
+from dbModel import *
+from datetime import datetime
+import json
+from sqlalchemy import desc
+import numpy as np
+import sys
+import re
+import time
 
+app = Flask(__name__)
 
-	}
-    function pushMsg() {
-        var msg = '刪除';
-        liff.sendMessages([  //推播訊息
-			{ type: 'text',
-			  text: msg
-			},
-		])
-			.then(() => {
-			alert('已刪除所有資料');
-            window.location.reload();
-			});
+line_bot_api = LineBotApi('bHi/8szU2mkZAaIMLGDKqTE8CnG4TjilHVVJsqDse2XD39ZUGdxiHRedvOGSC5Q7zJfFYZoOAIoMxeKAR5mQqbz0DomlYKjU7gMEK/zQ0QJFFVJLpDhwB8DRrJ8SAoqK+sEAMuD2PL0h0wdsZxncRwdB04t89/1O/w1cDnyilFU=')
+handler = WebhookHandler('2ee6a86bd730b810a7d614777f07cecb')
 
 
-    }
+@app.route("/")
+def home():
+    return 'home OK'
 
-	$(document).ready(function () {
+#爬蟲取得匯率
+def get_TodayRate(mode):
+    numb= []
+    cate=[]
+    data=[]
+    url_1= "https://rate.bot.com.tw/xrt?Lang=zh-TW"
+    resp_1 = requests.get(url_1)
+    ms = BeautifulSoup(resp_1.text,"html.parser")
+
+    t1=ms.find_all("td","rate-content-cash text-right print_hide")
+    for child in t1:
+        numb.append(child.text.strip())
+
+    buy=numb[0:37:2]
+    sell=numb[1:38:2]
+
+    t2=ms.find_all("div","hidden-phone print_show")
+    for child in t2:
+        cate.append(child.text.strip())
+    for i in range(19):
+        data.append([cate[i] +'買入：'+buy[i]+ '賣出：'+sell[i]])
+
+    if mode==1:
+        USD = data[0][0]
+        regex = re.compile(r'賣出：(\d+.*\d*)')
+        match = regex.search(USD)
+        return eval(match.group(1))
+    elif mode==2:
+        JPY = data[7][0]
+        regex = re.compile(r'賣出：(\d+.*\d*)')
+        match = regex.search(JPY)
+        return eval(match.group(1))
+    elif mode==3:
+        EUR = data[14][0]
+        regex = re.compile(r'賣出：(\d+.*\d*)')
+        match = regex.search(EUR)
+        return eval(match.group(1))
+    else:
+        return 1
+
+# 監聽所有來自 /callback 的 Post Request
+@app.route("/callback", methods=['POST'])
+def callback():
+    # get X-Line-Signature header value
+    signature = request.headers['X-Line-Signature']
+
+    # get request body as text
+    body = request.get_data(as_text=True)
+    bodyjson=json.loads(body)
+    app.logger.error("Request body: " + body)
+    if bodyjson['events'][0]['type'] != 'join' : 
+        Group_id='None'
+        if bodyjson['events'][0]['source']['type'] == 'group':
+            Group_id =  bodyjson['events'][0]['source']['groupId']
+        add_data = usermessage(
+        id = bodyjson['events'][0]['message']['id'],
+        group_num = '0',
+        nickname = 'None',
+        group_id = Group_id,
+        type = bodyjson['events'][0]['source']['type'],
+        status = 'None',
+        account = '0',
+        user_id = bodyjson['events'][0]['source']['userId'],
+        message = bodyjson['events'][0]['message']['text'],
+        birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000)
+        )
+
+        if bodyjson['events'][0]['source']['type'] == 'group':
+            receivedmsg = bodyjson['events'][0]['message']['text']
+            if '分帳設定' in receivedmsg: 
+                userName = receivedmsg.strip(' 分帳設定 ')
+                add_data = usermessage( 
+                    id = bodyjson['events'][0]['message']['id'], 
+                    group_num = '0', 
+                    nickname = userName, 
+                    group_id = bodyjson['events'][0]['source']['groupId'], 
+                    type = bodyjson['events'][0]['source']['type'], 
+                    status = 'set', 
+                    account = '0', 
+                    user_id = bodyjson['events'][0]['source']['userId'], 
+                    message = bodyjson['events'][0]['message']['text'], 
+                    birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000) 
+                )
+            elif ('分帳' in receivedmsg)  and (len(re.findall(r" ",receivedmsg)) >= 3):           
+                chargeName=receivedmsg.split(' ',3)[1]
+                chargeNumber=receivedmsg.split(' ',3)[2]
+                chargePeople=receivedmsg.split(' ',3)[3]            
+                if re.search(r"\D",chargeNumber) is None:
+                    add_data = usermessage(
+                        id = bodyjson['events'][0]['message']['id'],
+                        group_num = chargePeople.strip(' ') ,
+                        nickname = 'None',
+                        group_id = bodyjson['events'][0]['source']['groupId'],
+                        type = bodyjson['events'][0]['source']['type'],
+                        status = 'save',
+                        account = chargeNumber,
+                        user_id = bodyjson['events'][0]['source']['userId'],
+                        message = chargeName,
+                        birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000)
+                    )
+            elif ('美金設定' in receivedmsg):           
+                add_data = usermessage(
+                    id = bodyjson['events'][0]['message']['id'],
+                    group_num =  '0' ,
+                    nickname = 'None',
+                    group_id = bodyjson['events'][0]['source']['groupId'],
+                    type = bodyjson['events'][0]['source']['type'],
+                    status = 'USD',
+                    account = '0', 
+                    user_id = bodyjson['events'][0]['source']['userId'],
+                    message = get_TodayRate(1),
+                    birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000)
+                )
+            elif ('日圓設定' in receivedmsg):           
+                add_data = usermessage(
+                    id = bodyjson['events'][0]['message']['id'],
+                    group_num =  '0' ,
+                    nickname = 'None',
+                    group_id = bodyjson['events'][0]['source']['groupId'],
+                    type = bodyjson['events'][0]['source']['type'],
+                    status = 'JPY',
+                    account = '0', 
+                    user_id = bodyjson['events'][0]['source']['userId'],
+                    message = get_TodayRate(2),
+                    birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000)
+                )
+            elif ('歐元設定' in receivedmsg):           
+                add_data = usermessage(
+                    id = bodyjson['events'][0]['message']['id'],
+                    group_num =  '0' ,
+                    nickname = 'None',
+                    group_id = bodyjson['events'][0]['source']['groupId'],
+                    type = bodyjson['events'][0]['source']['type'],
+                    status = 'EUR',
+                    account = '0', 
+                    user_id = bodyjson['events'][0]['source']['userId'],
+                    message = get_TodayRate(3),
+                    birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000)
+                )
+                
+        else:
+            receivedmsg = bodyjson['events'][0]['message']['text']
+            receivedmsg = receivedmsg.strip(' ')
+            if ('記帳' in receivedmsg) and (len(re.findall(r" ",receivedmsg)) == 2):
+                chargeName=receivedmsg.split(' ')[1]
+                chargeNumber=receivedmsg.split(' ')[2]
+                if re.search(r"\D",chargeNumber) is None:
+                    add_data = usermessage(
+                            id = bodyjson['events'][0]['message']['id'],
+                            group_num = '0',
+                            nickname = 'None',
+                            group_id = 'None',
+                            type = bodyjson['events'][0]['source']['type'],
+                            status = 'save',
+                            account = chargeNumber,
+                            user_id = bodyjson['events'][0]['source']['userId'],
+                            message = chargeName ,
+                            birth_date = datetime.fromtimestamp(int(bodyjson['events'][0]['timestamp'])/1000)
+                        )
+
+        db.session.add(add_data)
+        db.session.commit()
+
+    # handle webhook body
+    try:
+        handler.handle(body, signature)
+    except InvalidSignatureError:
+        print("Invalid signature. Please check your channel access token/channel secret.")
+        abort(400)
+
+    return 'OK'
+
+
+def get_movie():   #電影討論度
+    movies = []
+    url_1= "https://movies.yahoo.com.tw/chart.html"
+    resp_1 = requests.get(url_1)
+    ms = BeautifulSoup(resp_1.text,"html.parser")
+
+    ms.find_all("div","rank_txt")
+    movies.append(ms.find('h2').text)
+
+    for rank_txt in ms.find_all("div","rank_txt"):
+        movies.append(rank_txt.text.strip())
+
+    return movies
+
+#從資料庫取得匯率
+def get_exchangeRate(mode):
+    if mode==1:
+        data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='USD' ).limit(1).all()
+        for _data in data_UserData:
+            USDrate = eval(_data.message)
+        return USDrate
+    if mode==2:
+        data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='JPY' ).limit(1).all()
+        for _data in data_UserData:
+            JPYrate=eval(_data.message)
+        return JPYrate
+    if mode==3:
+        data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='EUR' ).limit(1).all()
+        for _data in data_UserData:
+            EURrate=eval(_data.message)
+        return EURrate
+
+def get_history_list():   #取得最新資料
+    data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).limit(1).all()
+    history_dic = {}
+    history_list = []    
+    for _data in data_UserData:
+        history_dic['Status'] = _data.status
+        history_dic['type'] = _data.type
+        history_dic['user_id'] = _data.user_id
+        history_dic['group_id'] = _data.group_id
+        history_list.append(history_dic)
+    return history_list
+
+#記帳查帳
+def get_accountList(selfId):
+    time.sleep(0.2)
+    data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.user_id==selfId).filter(usermessage.status=='save').filter(usermessage.type=='user')
+    history_list = []
+    for _data in data_UserData:
+        history_dic = {}
+        history_dic['birth_date'] = _data.birth_date
+        history_dic['Mesaage'] = _data.message
+        history_dic['Account'] = _data.account
+        history_list.append(history_dic)
     
-		liff.init(function (data) {  //初始化LIFF
-            initializeApp(data);
-		});
-		
-        $('#sure').click(function (e) {  //按下確定鈕
-            
-			closewin(); 
-		});
-        $('#delete').click(function (e) {  //按下確定鈕
-            
-			pushMsg(); 
-		});
-	});
-</script>
-<style>
-body{
-  background-color: #FFEEDD;
-}
-ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+    total = 0
+    final_list =[]
+    for i in range(len(history_list)):
+        total += int(history_list[i]['Account'])
+        msgTime = str(history_list[i]['birth_date'])
+        final_list.append(msgTime[:10]+' '+str(history_list[i]['Mesaage'])+' '+str(history_list[i]['Account']))
 
-}
+    perfect_list=''
+    for j in range(len(final_list)):
+        perfect_list=perfect_list+str(j+1)+'.'+str(final_list[j])+'\n'
+    perfect_list = perfect_list+'\n'+'累計花費:'+str(total)
+    return perfect_list
 
-li {
-  float: left;
-  justify-content:center;
-}
-table {
-  border-collapse: collapse;
-  width: 100%;
-}
+#分帳查帳
+def get_settleList(selfGroupId):
+    dataSettle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==selfGroupId ).filter(usermessage.status=='save').filter(usermessage.type=='group')
+    historySettle_list = []
+    for _data in dataSettle_UserData:
+        historySettle_dic = {}
+        historySettle_dic['Mesaage'] = _data.message
+        historySettle_dic['Account'] = _data.account
+        historySettle_dic['GroupPeople'] =_data.group_num
+        historySettle_dic['Time'] =_data.birth_date
+        historySettle_list.append(historySettle_dic)
+    final_list =[]
+    for i in range(len(historySettle_list)):
+        settleTime = str(historySettle_list[i]['Time'])
+        final_list.append(settleTime[:10]+' '+str(historySettle_list[i]['Mesaage'])+' '+str(historySettle_list[i]['Account'])+' '+str(historySettle_list[i]['GroupPeople']))
+    perfect_list=''
+    for j in range(len(final_list)):
+        perfect_list += str(j+1)+'.'+str(final_list[j])+'\n'
+    return perfect_list
 
-th, td {
-  text-align: center;
-  padding: 8px;
-}
+#群組人數/名單
+def get_groupPeople(history_list,mode):
+    selfGroupId = history_list[0]['group_id']
+    data_UserData = usermessage.query.filter(usermessage.group_id==selfGroupId).filter(usermessage.status=='set')
+    GroupPeopleString=''
+    for _data in data_UserData:
+        GroupPeopleString += _data.nickname.strip(' ') +' '
+    new_list = GroupPeopleString.strip(' ').split(' ')
+    new_list=list(set(new_list)) #刪除重複
 
-tr:nth-child(odd) {background-color: #ffe7ca;}
+    if mode ==1:
+        return len(new_list)
+    elif mode ==2:
+        return new_list
+    else:
+        return 0
 
-th{
-    background-color: #ffdcb1;
-}
-.custom-select {
-  position: relative;
-  font-family: Arial;
-}
-
-.custom-select select {
-  display: none; /*hide original SELECT element:*/
-}
-
-.select-selected {
-  background-color: #ffe7ca;
-}
-
-/*style the arrow inside the select element:*/
-.select-selected:after {
-  position: absolute;
-  content: "";
-  top: 14px;
-  right: 10px;
-  width: 0;
-  height: 0;
-  border: 6px solid transparent;
-  border-color: #ffe7ca transparent transparent transparent;
-}
-
-/*point the arrow upwards when the select box is open (active):*/
-.select-selected.select-arrow-active:after {
-  border-color: transparent transparent #b37224 transparent;
-  top: 7px;
-}
-
-/*style the items (options), including the selected item:*/
-.select-items div,.select-selected {
-  color: #000000;
-  padding: 8px 16px;
-  border: 1px solid transparent;
-  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
-  cursor: pointer;
-  user-select: none;
-}
-
-/*style items (options):*/
-.select-items {
-  position: absolute;
-  background-color: #ffdcb1;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 99;
-}
-
-/*hide the items when the select box is closed:*/
-.select-hide {
-  display: none;
-}
-.button2 {
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    padding: 0px 17px;
-    border: 1px solid #a88d8d;
-    border-radius: 7px;
-    background: #b2eaff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#b2eaff), to(#94afff));
-    background: -moz-linear-gradient(top, #b2eaff, #94afff);
-    background: linear-gradient(to bottom, #b2eaff, #94afff);
-    -webkit-box-shadow: #fff1f1 0px 0px 46px 0px;
-    -moz-box-shadow: #fff1f1 0px 0px 46px 0px;
-    box-shadow: #fff1f1 0px 0px 46px 0px;
-    text-shadow: #ffffff 1px 1px 1px;
-    font: normal normal bold 20px arial;
-    color: #001891;
-    text-decoration: none;
-}
-.button2:hover,
-.button2:focus {
-    border: 1px solid #f0c9c9;
-    background: #d6ffff;
-    background: -webkit-gradient(linear, left top, left bottom, from(#d6ffff), to(#b2d2ff));
-    background: -moz-linear-gradient(top, #d6ffff, #b2d2ff);
-    background: linear-gradient(to bottom, #d6ffff, #b2d2ff);
-    color: #001891;
-    text-decoration: none;
-}
-.button2:active {
-    background: #6b8c99;
-    background: -webkit-gradient(linear, left top, left bottom, from(#6b8c99), to(#94afff));
-    background: -moz-linear-gradient(top, #6b8c99, #94afff);
-    background: linear-gradient(to bottom, #6b8c99, #94afff);
-}
-.button2:before{
-    content:  "\0000a0";
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    line-height: 20px;
-    margin: 0 4px -6px -4px;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAgMAAADw5/WeAAAADFBMVEVUpN47cpuIv+j////WN4xEAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAMklEQVQImWN4tWrVqtUMDQwMDIzEkfb//wBJ09BYIGnCwAsW+QskWUNDiTPhamhoaDgATK0VHVjI0UwAAAAASUVORK5CYII=") no-repeat left center transparent;
-    background-size: 100% 100%;
-}
-.button3 {
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    padding: 0px 17px;
-    border: 1px solid #a88d8d;
-    border-radius: 7px;
-    background: #ffb2b2;
-    background: -webkit-gradient(linear, left top, left bottom, from(#ffb2b2), to(#ff9494));
-    background: -moz-linear-gradient(top, #ffb2b2, #ff9494);
-    background: linear-gradient(to bottom, #ffb2b2, #ff9494);
-    -webkit-box-shadow: #fff1f1 0px 0px 46px 0px;
-    -moz-box-shadow: #fff1f1 0px 0px 46px 0px;
-    box-shadow: #fff1f1 0px 0px 46px 0px;
-    text-shadow: #ffffff 1px 1px 1px;
-    font: normal normal bold 20px arial;
-    color: #910000;
-    text-decoration: none;
-}
-.button3:hover,
-.button3:focus {
-    border: 1px solid #f0c9c9;
-    background: #ffd6d6;
-    background: -webkit-gradient(linear, left top, left bottom, from(#ffd6d6), to(#ffb2b2));
-    background: -moz-linear-gradient(top, #ffd6d6, #ffb2b2);
-    background: linear-gradient(to bottom, #ffd6d6, #ffb2b2);
-    color: #001891;
-    text-decoration: none;
-}
-.button3:active {
-    background: #996b6b;
-    background: -webkit-gradient(linear, left top, left bottom, from(#996b6b), to(#ff9494));
-    background: -moz-linear-gradient(top, #996b6b, #ff9494);
-    background: linear-gradient(to bottom, #996b6b, #ff9494);
-}
-.button3:before{
-    content:  "\0000a0";
-    display: inline-block;
-    height: 20px;
-    width: 20px;
-    line-height: 20px;
-    margin: 0 4px -6px -4px;
-    position: relative;
-    top: 0px;
-    left: 0px;
-    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAgMAAADw5/WeAAAADFBMVEVUpN47cpuIv+j////WN4xEAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAMklEQVQImWN4tWrVqtUMDQwMDIzEkfb//wBJ09BYIGnCwAsW+QskWUNDiTPhamhoaDgATK0VHVjI0UwAAAAASUVORK5CYII=") no-repeat left center transparent;
-    background-size: 100% 100%;
-}
-</style>
-</head>
-<body>
+#處理加入群組
+@handler.add(JoinEvent)
+def handle_join(event):
+    message = ImagemapSendMessage(
+                            base_url="https://i.imgur.com/CzIxqa1.png",
+                            alt_text='我要進來囉',
+                            base_size=BaseSize(height=1040, width=1240),
+                            actions=[
+            URIImagemapAction(
+                #分帳者設定
+                link_uri="https://liff.line.me/1654876504-QNXjnrl2",
+                area=ImagemapArea(
+                    x=60, y=659, width=479, height=274
+                )
+            ),
+            URIImagemapAction(
+                #記錄分帳
+                link_uri="https://liff.line.me/1654876504-9wWzOva7",
+                area=ImagemapArea(
+                    x=60, y=381, width=479, height=274
+                )
+            ),
+            MessageImagemapAction(
+                #使用說明
+                text="@help",
+                area=ImagemapArea(
+                    x=543, y=653, width=462, height=273
+                )
+            ),
+            URIImagemapAction(
+                #查帳結算
+                link_uri="https://liff.line.me/1654876504-rK3v07Pk",
+                area=ImagemapArea(
+                    x=543, y=373, width=445, height=282
+                )
+            )
+                            ]
+        )
+                        
+    line_bot_api.reply_message(event.reply_token,message)
 
 
-<script type="text/javascript">
-function divShow(){
-document.getElementById("btnshow").style.display="block";
-document.getElementById("btnhref").innerHTML ="隱藏清單";
-document.getElementById("btnhref").href ="javascript:divhidden()";
-}
-function divhidden(){
-document.getElementById("btnshow").style.display="none";
-document.getElementById("btnhref").innerHTML ="展開清單";
-document.getElementById("btnhref").href ="javascript:divShow()"; 
-}
-</script>
-
-<script type="text/javascript">
-function div_show(){
-document.getElementById("simpleshow").style.display="block";
-document.getElementById("notsimpleshow").style.display="none";
-document.getElementById("simplehref").innerHTML ="不簡化結算";
-document.getElementById("simplehref").href ="javascript:div_hidden()";
-}
-function div_hidden(){
-document.getElementById("simpleshow").style.display="none";
-document.getElementById("notsimpleshow").style.display="block";
-document.getElementById("simplehref").innerHTML ="簡化結算";
-document.getElementById("simplehref").href ="javascript:div_show()"; 
-}
-</script>
-
-<div align="center">
-<ul>
-  <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
-  <li><h1 style="line-height:100px;"><strong>查帳結算</strong></h1></li>
-</ul>
-    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
-    <strong> &nbsp目前帳目</strong>
-    <a href="javascript:divShow();" id="btnhref" class="btn-slide">展開清單</a>
-    </p>
-    <div  style="display: none;" id="btnshow">
-    <table>
-        <thead align="center">
-            <th>編號</th>
-            <th>項目</th>
-            <th>金額</th>
-            <th>代墊/分帳者</th>
-        </thead>
-        <tbody>
-            {% for _data in save_list %}
-                <tr>
-                    <td align="center">{{ _data.number }}</td>
-                    <td>{{ _data.clearMessage }}</td>
-                    <td>{{ _data.withcurr }}</td>
-                    <td>{{ _data.payPeople }}</td>
-                </tr>
-            {% endfor%}
-        </tbody>
-    </table><br/>
-     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
-    <script>
-        function deleteOption(list){
-            var index=list.selectedIndex;
-            var msg = 'delete';
-            msg=msg+index;
-        if(index>0){        
-            liff.sendMessages([  
-			{ type: 'text',
-			  text: msg
-			},
-		])
-        .then(() => {
-			alert('已刪除該筆資料');
-            window.location.reload();
-			});
-        }
-
-            if (index>0)
-                list.options[index]=null;
-
-            else
-                alert("無資料可以刪除！");
-        }
+# 處理訊息
+@handler.add(MessageEvent, message=TextMessage)
+def handle_message(event):
+    input_text = event.message.text.lower()
+    history_list = get_history_list()
+    if history_list[0]['type'] == 'user':      #個人部分
+        selfId = history_list[0]['user_id']
+        if (history_list[0]['Status'] == 'save') and ('記帳' in input_text):
+            output_text='記帳成功'
+                
+        elif input_text =='查帳':
+            for i in range(10):
+                output_text = get_accountList(selfId)
         
-        </script>
+        elif input_text =='@help':
+            Carousel_template = TemplateSendMessage(
+                            alt_text='使用說明',
+                            template=ImageCarouselTemplate(
+                            columns=[
+                ImageCarouselColumn(
+                    image_url="https://imgur.com/6ZXZUPu.jpg",
+                    action=URITemplateAction(
+                        uri="https://imgur.com/6ZXZUPu.jpg"
+                    )
+                )
+            ]     
+                            )
+                        )
+            line_bot_api.reply_message(event.reply_token,Carousel_template)
+        elif input_text =='刪除':
+            for i in range(3):
+                data_UserData = usermessage.query.filter(usermessage.user_id==selfId).filter(usermessage.status=='save').delete(synchronize_session='fetch')
+            output_text='刪除成功'
+
+        elif 'delete' in input_text:
+            data_UserData = usermessage.query.filter(usermessage.user_id==selfId).filter(usermessage.status=='save').filter(usermessage.type=='user')
+            count=0
+            for _data in data_UserData:
+                count+=1
+            try:
+                del_number = int (input_text.strip('delete '))  
+                if del_number <= count :
+                    data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.user_id==selfId).filter(usermessage.status=='save').filter(usermessage.type=='user')[del_number-1:del_number]
+                    for _data in data_UserData:
+                        personID = _data.id
+                    data_UserData = usermessage.query.filter(usermessage.id==personID).delete(synchronize_session='fetch')
+                    output_text='刪除成功'+'\n\n'+'記帳清單：'+'\n'+get_accountList(selfId)
+                    db.session.commit()
+                else:
+                    output_text='刪除失敗'
+            except:
+                output_text='刪除失敗'
+
+        elif input_text =='理財':            
+            line_bot_api.reply_message(  
+            event.reply_token,
+            TemplateSendMessage(
+                alt_text='Buttons template',
+                template=ButtonsTemplate(
+                    title='理財小幫手',
+                    text='請選擇功能',
+                    actions=[
+                        URITemplateAction(
+                            label='股市',
+                            uri='https://tw.stock.yahoo.com/'
+                        ),
+                        URITemplateAction(
+                            label='匯率',
+                            uri='https://rate.bot.com.tw/xrt?Lang=zh-TW'
+                        ),
+                        URITemplateAction(
+                            label='財經新聞',
+                            uri='https://www.msn.com/zh-tw/money'
+                        )
+                        ]
+                    )
+                )
+            )
+
+        else:
+            output_text='記帳失敗，請再檢查記帳格式'+'\n'+'輸入：記帳 分類/項目 金額'+'\n'+'ex：記帳 吃/麻糬 200'
+        line_bot_api.reply_message(event.reply_token, TextSendMessage(output_text ))
         
-        <form>
-        <select id=theList size=5>
-            <option value='請選擇'>請選擇</option>
-            {% for _data in save_list %}
-            <option id="{{ _data.number }}" value="{{ _data.number }}">{{ _data.number }} {{ _data.message }} {{ _data.account }}</option>
-            {% endfor %}
+    else:  #群組部分
+        selfGroupId = history_list[0]['group_id']
+        if (history_list[0]['Status'] == 'set') and ('分帳設定' in input_text):
+            groupNumber=get_groupPeople(history_list,1)
+            output_text='分帳設定成功:共有'+str(groupNumber)+'人分帳'
 
-        </select>
-        <br/><br/>
-        <input type="button" value="刪除此筆資料" onclick="deleteOption(theList)" class="button2"><br>
-        </form>
-        <br/>
-        <input type="button" name="ok" id="delete" value="刪除所有資料" class=button3><br>
-        <br/>
-    </div>
-    
-    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp代墊與欠款統計</strong></p>
-    <!-- <p>說明：以現在匯率換算</p><br/> -->
-    <p align="left">&nbsp群組分帳人：</p>
-    <p>{{ peopleResult }}</p><br/>
-    <p align="left">&nbsp金額(NTD)
-        <img src="{{ img }}" align="right" >
-    </p>
-    <p>分帳者</p>
-    <p style="font-color: red"><strong>{{warning}}</strong></p>
-    <br/>
-    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
-    <strong>&nbsp結算</strong>
-    <a href="javascript:div_show();" id="simplehref">簡化結算</a>
-    </p>
+        elif (history_list[0]['Status'] == 'save') and ('分帳' in input_text):
+            output_text='分帳紀錄成功'
 
-    <div id="notsimpleshow" style="display: block;">
-    {% for list in notsimplify %}
-    <p>{{list}}</p>
-     {% endfor %}
-    </div><br/>
-    <div id="simpleshow" style="display: none;">
-    {% for list in settle %}
-    <p>{{ list }}</p>
-    {% endfor %}
-    </div><br/>
-    <p style="text-align:left;"><strong>Q : 什麼是簡化分帳?</strong></p>
-    <p style="text-align:left;"><strong>A : 簡化分帳能夠自動將群組中的債務結合起來。</strong></p>
-    <p style="text-align:left;">如下圖所示 : </p>
-    <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化分帳，則會顯示鳥A直接將1000元交給C</p>
-<img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
+        elif (history_list[0]['Status'] == 'None') and ('分帳' in input_text):
+            output_text='分帳紀錄失敗'
 
-</div>
-<br/>
-</body>
-</html>
+        elif input_text == '設定查詢':
+            groupMember=get_groupPeople(history_list,2)
+            output_text="分帳名單:"
+            for i in range(get_groupPeople(history_list,1)):
+                output_text+='\n'+groupMember[i]
 
+        elif '美金設定' in input_text:
+            NowRate=get_TodayRate(1)
+            output_text="今日匯率："+str(NowRate)
+
+        elif '日圓設定' in input_text:
+            NowRate=get_TodayRate(2)
+            output_text="今日匯率："+str(NowRate)
+        
+        elif '歐元設定' in input_text:
+            NowRate=get_TodayRate(3)
+            output_text="今日匯率："+str(NowRate)
+
+        elif input_text == '刪除':
+            for i in range(3):
+                data_UserData = usermessage.query.filter(usermessage.group_id==selfGroupId).filter(usermessage.status=='save').delete(synchronize_session='fetch')
+            output_text='刪除成功'
+            db.session.commit()
+
+        elif input_text == '設定刪除':
+            data_UserData = usermessage.query.filter(usermessage.group_id==selfGroupId).filter(usermessage.status=='set').delete(synchronize_session='fetch')
+            db.session.commit()
+            output_text='刪除成功'
+
+        elif 'delete' in input_text:
+            data_UserData = usermessage.query.filter(usermessage.status=='save').filter(usermessage.group_id==selfGroupId)
+            count=0
+            for _data in data_UserData:
+                count+=1
+            print('總共',count)
+            sys.stdout.flush()
+            
+            try:
+                del_number = int (input_text.strip('delete '))
+                if del_number <= count :
+                    data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.status=='save').filter(usermessage.group_id==selfGroupId)[del_number-1:del_number]
+                    for _data in data_UserData:
+                        personID = _data.id
+                    data_UserData = usermessage.query.filter(usermessage.id==personID).delete(synchronize_session='fetch')
+                    output_text='刪除成功'+'\n\n'+'記帳清單：'+'\n'+get_settleList(selfGroupId)
+                    db.session.commit()
+                else:
+                    output_text='刪除失敗'
+            except:
+                output_text='刪除失敗'
+
+        elif input_text == '查帳':
+            output_text = get_settleList(selfGroupId)
+
+        elif input_text =='理財':            
+            line_bot_api.reply_message(  
+            event.reply_token,
+            TemplateSendMessage(
+                alt_text='Buttons template',
+                template=ButtonsTemplate(
+                    title='理財小幫手',
+                    text='請選擇功能',
+                    actions=[
+                        URITemplateAction(
+                            label='股市',
+                            uri='https://tw.stock.yahoo.com/'
+                        ),
+                        URITemplateAction(
+                            label='匯率',
+                            uri='https://rate.bot.com.tw/xrt?Lang=zh-TW'
+                        ),
+                        URITemplateAction(
+                            label='財經新聞',
+                            uri='https://www.msn.com/zh-tw/money'
+                        )
+                        ]
+                    )
+                )
+            )
+
+        elif input_text =='結算':            
+            selfGroupId = history_list[0]['group_id']
+            dataSettle_UserData = usermessage.query.filter(usermessage.group_id==selfGroupId ).filter(usermessage.status=='save').filter(usermessage.type=='group')
+            historySettle_list = []
+            person_list  = get_groupPeople(history_list,2)
+            person_num = get_groupPeople(history_list,1)
+            for _data in dataSettle_UserData:
+                historySettle_dic = {}
+                historySettle_dic['Account'] = _data.account
+                historySettle_dic['GroupPeople'] =_data.group_num
+                historySettle_dic['message'] = _data.message
+                historySettle_list.append(historySettle_dic)
+            
+            dataNumber=len(historySettle_list)
+            account = np.zeros(person_num)
+            exchange_rate_USD = 0
+            exchange_rate_JPY = 0
+            exchange_rate_EUR = 0
+            for i in range(dataNumber):   #分帳金額
+                b=dict(historySettle_list[i])
+                GroupPeopleString=b['GroupPeople'].strip(' ').split(' ')  #刪除代墊者
+                del GroupPeopleString[0]
+                
+                if 'USD' in b['message']:   #匯率轉換
+                    if exchange_rate_USD:
+                        exchange_rate = exchange_rate_USD
+                    else:
+                        exchange_rate_USD = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_USD
+                elif 'JPY' in b['message']:
+                    if exchange_rate_JPY:
+                        exchange_rate = exchange_rate_JPY
+                    else:
+                        exchange_rate_JPY = get_exchangeRate(2)
+                        exchange_rate = exchange_rate_JPY
+                elif 'EUR' in b['message']:
+                    if exchange_rate_EUR:
+                        exchange_rate = exchange_rate_EUR
+                    else:
+                        exchange_rate_EUR = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_EUR
+                else:
+                    exchange_rate = 1
+
+                payAmount = exchange_rate*int(b['Account']) / len(GroupPeopleString)
+                a1=set(person_list)      #分帳設定有的人
+                a2=set(GroupPeopleString)
+                duplicate = list(a1.intersection(a2))       #a1和a2重複的人名
+                for j in range(len(duplicate)):      #分帳金額
+                    place=person_list.index(duplicate[j])
+                    account[place] -= payAmount
+                    
+            for j in range(dataNumber):  #代墊金額
+                b=dict(historySettle_list[j])
+                GroupPeopleString=b['GroupPeople'].strip(' ').split(' ')
+                if 'USD' in b['message']:   #匯率轉換
+                    if exchange_rate_USD:
+                        exchange_rate = exchange_rate_USD
+                    else:
+                        exchange_rate_USD = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_USD
+                elif 'JPY' in b['message']:
+                    if exchange_rate_JPY:
+                        exchange_rate = exchange_rate_JPY
+                    else:
+                        exchange_rate_JPY = get_exchangeRate(2)
+                        exchange_rate = exchange_rate_JPY
+                elif 'EUR' in b['message']:
+                    if exchange_rate_EUR:
+                        exchange_rate = exchange_rate_EUR
+                    else:
+                        exchange_rate_EUR = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_EUR
+                else:
+                    exchange_rate = 1
+
+                for i in range(person_num):  
+                    if GroupPeopleString[0] ==  person_list[i]:
+                        account[i] += exchange_rate * int(b['Account'])
+
+            #將人和錢結合成tuple，存到一個空串列
+            person_account=[]
+            for i in range(person_num):
+                zip_tuple=(person_list[i],account[i])
+                person_account.append(zip_tuple)
+
+            #重複執行交換動作
+            result=""
+            for i in range(person_num-1):  #排序
+                person_account=sorted(person_account, key = lambda s:s[1])
+
+                #找到最大、最小值
+                min_tuple=person_account[0]
+                max_tuple=person_account[-1]
+                min=float(min_tuple[1])
+                max=float(max_tuple[1])
+
+                #交換，印出該付的錢
+                if min==0 or max==0:
+                    pass
+                elif (min+max)>0:
+                    result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+str(abs(round(min,2)))+'元'+'\n'
+                    max_tuple=(max_tuple[0],min+max)
+                    min_tuple=(min_tuple[0],0)
+                elif (min+max)<0:
+                    result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+str(abs(round(max,2)))+'元'+'\n'
+                    min_tuple=(min_tuple[0],min+max)
+                    max_tuple=(max_tuple[0],0)
+                else:
+                    result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+str(abs(round(max,2)))+'元'+'\n'
+                    min_tuple=(min_tuple[0],0)
+                    max_tuple=(max_tuple[0],0)
+                
+                person_account[0]=min_tuple
+                person_account[-1]=max_tuple
+            # result=result+'\n'+'下次不要再讓'+str(max_tuple[0])+'付錢啦! TA幫你們付很多了!'
+
+            output_text = result
+
+        elif input_text =='稍微':             
+            selfGroupId = history_list[0]['group_id'] 
+            dataSettle_UserData = usermessage.query.filter(usermessage.group_id==selfGroupId ).filter(usermessage.status=='save').filter(usermessage.type=='group') 
+            historySettle_list = [] 
+            person_list  = get_groupPeople(history_list,2)  #分帳設定人名
+            person_num = get_groupPeople(history_list,1)  #分帳設定人數
+            for _data in dataSettle_UserData: 
+                historySettle_dic = {} 
+                historySettle_dic['Account'] = _data.account 
+                historySettle_dic['GroupPeople'] =_data.group_num 
+                historySettle_list.append(historySettle_dic) 
+                
+            dataNumber=len(historySettle_list) 
+            account= np.zeros((person_num,person_num)) 
+            for i in range(dataNumber): 
+                b=dict(historySettle_list[i]) 
+                GroupPeopleString=b['GroupPeople'].split(' ')
+                payAmount = round( int(b['Account']) / (len(GroupPeopleString)-1),2)  #不包含代墊者
+                a1=set(person_list)      #分帳設定有的人 
+                a2=set(GroupPeopleString) 
+                duplicate = list(a1.intersection(a2))         #a1和a2重複的人名 
+                for j in range(len(duplicate)):      #誰付誰錢矩陣 2給1 
+                    place1=person_list.index(GroupPeopleString[0]) 
+                    place2=person_list.index(duplicate[j]) 
+                    account[place1][place2]+=payAmount 
+            result=""
+            for i in range ( person_num ): #誰付誰錢輸出 
+                for j in range ( person_num ): 
+                   payAmount = account[i][j] - account[j][i]
+                   if ( payAmount<0 ): 
+                        result += person_list[i]+'付給'+person_list[j] + str(account[i][j]) +'元'+'\n' 
+            output_text = result
+     
+        elif input_text == '清空資料庫':
+            data_UserData = usermessage.query.filter(usermessage.status=='None').delete(synchronize_session='fetch')
+            db.session.commit()
+            output_text = '爽啦沒資料囉\n快給我重新設定匯率'
+
+        elif input_text =='帳獒':
+            try:
+                message =TextSendMessage(
+                    text="快速選擇下列功能：",
+                    quick_reply=QuickReply(
+                        items=[
+                            QuickReplyButton(
+                                action=MessageAction(label="主選單",text="@選單")
+                            ),
+                            QuickReplyButton(
+                                action=MessageAction(label="查帳",text="查帳")
+                            ),
+                            QuickReplyButton(
+                                action=MessageAction(label="簡化結算",text="結算")
+                            ),
+                            QuickReplyButton(
+                                action=MessageAction(label="不簡化結算",text="稍微")
+                            ),
+                            QuickReplyButton(
+                                action=MessageAction(label="使用說明",text="@help")
+                            ),
+                        ]
+
+                    )
+                    )
+                line_bot_api.reply_message(event.reply_token,message)
+            except:
+                line_bot_api.reply_message(event.reply_token,
+                    TextSendMessage ('發生錯誤!'))
+
+        elif input_text =='@help' :
+            Carousel_template = TemplateSendMessage(
+                            alt_text='使用說明',
+                            template=ImageCarouselTemplate(
+                            columns=[
+                ImageCarouselColumn(
+                    image_url="https://i.imgur.com/m4fkFQJ.jpg",
+                    action=URITemplateAction(
+                        uri="https://i.imgur.com/m4fkFQJ.jpg"
+                    )
+                ),
+                ImageCarouselColumn(
+                    image_url="https://imgur.com/Y1BoSsp.jpg",
+                    action=URITemplateAction(
+                        uri="https://imgur.com/Y1BoSsp.jpg"
+                    )
+                ),
+                ImageCarouselColumn(
+                    image_url="https://imgur.com/8r5SMgQ.jpg",
+                    action=URITemplateAction(
+                        uri="https://imgur.com/Y1BoSsp.jpg"
+                    )
+                ),
+                ImageCarouselColumn(
+                    image_url="https://imgur.com/uJKYIsg.jpg",
+                    action=URITemplateAction(
+                        uri="https://imgur.com/Y1BoSsp.jpg"
+                    )
+
+                )
+            ]     
+                            )
+                        )
+            line_bot_api.reply_message(event.reply_token,Carousel_template)
+        elif input_text =='@選單'  :
+            message = ImagemapSendMessage(
+                            base_url="https://i.imgur.com/CzIxqa1.png",
+                            alt_text='功能總覽',
+                            base_size=BaseSize(height=1040, width=1240),
+                            actions=[
+            URIImagemapAction(
+                #分帳者設定
+                link_uri="https://liff.line.me/1654876504-QNXjnrl2",
+                area=ImagemapArea(
+                    x=60, y=659, width=479, height=274
+                )
+            ),
+            URIImagemapAction(
+                #記錄分帳
+                link_uri="https://liff.line.me/1654876504-9wWzOva7",
+                area=ImagemapArea(
+                    x=60, y=381, width=479, height=274
+                )
+            ),
+            MessageImagemapAction(
+                #使用說明
+                text="@help",
+                area=ImagemapArea(
+                    x=543, y=653, width=462, height=273
+                )
+            ),
+            URIImagemapAction(
+                #查帳結算
+                link_uri="https://liff.line.me/1654876504-rK3v07Pk",
+                area=ImagemapArea(
+                    x=543, y=373, width=445, height=282
+                )
+            )
+        ]
+                       
+                            )
+            line_bot_api.reply_message(event.reply_token,message)
+
+        elif input_text=='電影':
+            output_text = str(get_movie())
+
+        elif input_text == '嗷嗷嗷':
+            output_text = '嗷嗷嗷'
+
+        elif input_text == '乖狗狗':
+            line_bot_api.reply_message(event.reply_token, StickerSendMessage(package_id=1, sticker_id=2))
+
+        line_bot_api.reply_message(event.reply_token, TextSendMessage (output_text) )
+        
+
+
+if __name__ == "__main__":
+    app.run()
