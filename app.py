@@ -218,7 +218,7 @@ def index():
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
         for i in range(person_num):
-            zip_tuple=(person_list[i],account[0][i])
+            zip_tuple=(person_list[i],account[i])
             person_account.append(zip_tuple)
 
         #重複執行交換動作
