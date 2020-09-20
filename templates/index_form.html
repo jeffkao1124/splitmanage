@@ -360,13 +360,15 @@ document.getElementById("simplehref").href ="javascript:div_show()";
   </div>
   <script>
     var ctx=$('#myChart');
+    var Account_list = {{ account_list|tojson }};
+    var Person_list = {{ person_list|tojson }};
     var myChart=new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: {{person_list}},
+        labels: Person_list,
         datasets: [{
           label: '代墊與欠款柱狀圖',
-          data: {{account_list}},
+          data: Account_list,
           backgroundColor: [
             'rgba(255, 99, 132, 0.2)',
             'rgba(54, 162, 235, 0.2)',
