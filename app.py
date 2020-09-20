@@ -1,304 +1,381 @@
-from flask import Flask, request, abort
-from flask_sqlalchemy import SQLAlchemy
-from flask import render_template
-from datetime import datetime
-from sqlalchemy import desc
-from flask import render_template
-import numpy as np
-import sys
-from matplotlib import pyplot as plt
-from matplotlib.font_manager import FontProperties
-import base64
-from io import BytesIO
-import requests
-from bs4 import BeautifulSoup
-import re
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1" />
+    <title>查帳小幫手</title>
+    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script>
+        function print_value() {
+
+            document.getElementById("result") = document.getElementById("number").value
+        }
+</script>
+<script>
+	function initializeApp(data) {  //初始化LIFF
+        var userid = data.context.userId;
+        var groupid = data.context.groupId; //取得ID
+        document.getElementById('post_groupID').value = groupid;
+
+	}
+	function closewin() {
+
+        liff.closeWindow();
 
 
-app=Flask(__name__)
-app.config[
-    'SQLALCHEMY_DATABASE_URI'] ='postgres://brjgqjmnamwnxc:2038ec5ace178f7e6f34d1015384a39e7274126f60488b14a5403582ae5a8966@ec2-3-95-87-221.compute-1.amazonaws.com:5432/d3s7d1dsfli0sd'
-
-app.config[
-    'SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-
-db = SQLAlchemy(app)
-groupId=0
-class usermessage(db.Model):
-    __tablename__ ='usermessage'
-    id = db.Column(db.String(50), primary_key=True)
-    group_num = db.Column(db.Text)
-    nickname = db.Column(db.Text)
-    group_id = db.Column(db.String(50))
-    type = db.Column(db.Text)
-    status = db.Column(db.Text)
-    account = db.Column(db.Text)
-    user_id = db.Column(db.String(50))
-    message = db.Column(db.Text)
-    birth_date = db.Column(db.TIMESTAMP)
+	}
+    function pushMsg() {
+        var msg = '刪除';
+        liff.sendMessages([  //推播訊息
+			{ type: 'text',
+			  text: msg
+			},
+		])
+			.then(() => {
+			alert('已刪除所有資料');
+            window.location.reload();
+			});
 
 
-def get_groupPeople(groupId,mode):
-    data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
-    GroupPeopleString=''
-    for _data in data_UserData:
-        GroupPeopleString += _data.nickname +' '
-    new_list = GroupPeopleString.strip('  ').split(' ')
-    new_list=list(set(new_list)) #刪除重複
+    }
 
-    if mode==1:
-        return len(new_list)
-    elif mode==2:
-        return new_list
-    else:
-        return 0
+	$(document).ready(function () {
+    
+		liff.init(function (data) {  //初始化LIFF
+            initializeApp(data);
+		});
+		
+        $('#sure').click(function (e) {  //按下確定鈕
+            
+			closewin(); 
+		});
+        $('#delete').click(function (e) {  //按下確定鈕
+            
+			pushMsg(); 
+		});
+	});
+</script>
+<style>
+body{
+  background-color: #FFEEDD;
+}
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 
-#從資料庫取得匯率
-def get_exchangeRate(mode):
-    if mode==1:
-        data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='USD' ).limit(1).all()
-        for _data in data_UserData:
-            USDrate = eval(_data.message)
-        return USDrate
-    if mode==2:
-        data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='JPY' ).limit(1).all()
-        for _data in data_UserData:
-            JPYrate=eval(_data.message)
-        return JPYrate
-    if mode==3:
-        data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='EUR' ).limit(1).all()
-        for _data in data_UserData:
-            EURrate=eval(_data.message)
-        return EURrate
+}
 
-def get_notsimplify():
-    groupId = request.values['groupId']
-    dataSettle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
-    historySettle_list = [] 
-    person_list  = get_groupPeople(groupId,2)  #分帳設定人名
-    person_num = get_groupPeople(groupId,1)  #分帳設定人數
-    for _data in dataSettle_UserData: 
-        historySettle_dic = {} 
-        historySettle_dic['Account'] = _data.account 
-        historySettle_dic['GroupPeople'] =_data.group_num 
-        historySettle_list.append(historySettle_dic) 
+li {
+  float: left;
+  justify-content:center;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th, td {
+  text-align: center;
+  padding: 8px;
+}
+
+tr:nth-child(odd) {background-color: #ffe7ca;}
+
+th{
+    background-color: #ffdcb1;
+}
+.custom-select {
+  position: relative;
+  font-family: Arial;
+}
+
+.custom-select select {
+  display: none; /*hide original SELECT element:*/
+}
+
+.select-selected {
+  background-color: #ffe7ca;
+}
+
+/*style the arrow inside the select element:*/
+.select-selected:after {
+  position: absolute;
+  content: "";
+  top: 14px;
+  right: 10px;
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-color: #ffe7ca transparent transparent transparent;
+}
+
+/*point the arrow upwards when the select box is open (active):*/
+.select-selected.select-arrow-active:after {
+  border-color: transparent transparent #b37224 transparent;
+  top: 7px;
+}
+
+/*style the items (options), including the selected item:*/
+.select-items div,.select-selected {
+  color: #000000;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+  user-select: none;
+}
+
+/*style items (options):*/
+.select-items {
+  position: absolute;
+  background-color: #ffdcb1;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 99;
+}
+
+/*hide the items when the select box is closed:*/
+.select-hide {
+  display: none;
+}
+.button2 {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0px 17px;
+    border: 1px solid #a88d8d;
+    border-radius: 7px;
+    background: #b2eaff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#b2eaff), to(#94afff));
+    background: -moz-linear-gradient(top, #b2eaff, #94afff);
+    background: linear-gradient(to bottom, #b2eaff, #94afff);
+    -webkit-box-shadow: #fff1f1 0px 0px 46px 0px;
+    -moz-box-shadow: #fff1f1 0px 0px 46px 0px;
+    box-shadow: #fff1f1 0px 0px 46px 0px;
+    text-shadow: #ffffff 1px 1px 1px;
+    font: normal normal bold 20px arial;
+    color: #001891;
+    text-decoration: none;
+}
+.button2:hover,
+.button2:focus {
+    border: 1px solid #f0c9c9;
+    background: #d6ffff;
+    background: -webkit-gradient(linear, left top, left bottom, from(#d6ffff), to(#b2d2ff));
+    background: -moz-linear-gradient(top, #d6ffff, #b2d2ff);
+    background: linear-gradient(to bottom, #d6ffff, #b2d2ff);
+    color: #001891;
+    text-decoration: none;
+}
+.button2:active {
+    background: #6b8c99;
+    background: -webkit-gradient(linear, left top, left bottom, from(#6b8c99), to(#94afff));
+    background: -moz-linear-gradient(top, #6b8c99, #94afff);
+    background: linear-gradient(to bottom, #6b8c99, #94afff);
+}
+.button2:before{
+    content:  "\0000a0";
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
+    margin: 0 4px -6px -4px;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAgMAAADw5/WeAAAADFBMVEVUpN47cpuIv+j////WN4xEAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAMklEQVQImWN4tWrVqtUMDQwMDIzEkfb//wBJ09BYIGnCwAsW+QskWUNDiTPhamhoaDgATK0VHVjI0UwAAAAASUVORK5CYII=") no-repeat left center transparent;
+    background-size: 100% 100%;
+}
+.button3 {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0px 17px;
+    border: 1px solid #a88d8d;
+    border-radius: 7px;
+    background: #ffb2b2;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffb2b2), to(#ff9494));
+    background: -moz-linear-gradient(top, #ffb2b2, #ff9494);
+    background: linear-gradient(to bottom, #ffb2b2, #ff9494);
+    -webkit-box-shadow: #fff1f1 0px 0px 46px 0px;
+    -moz-box-shadow: #fff1f1 0px 0px 46px 0px;
+    box-shadow: #fff1f1 0px 0px 46px 0px;
+    text-shadow: #ffffff 1px 1px 1px;
+    font: normal normal bold 20px arial;
+    color: #910000;
+    text-decoration: none;
+}
+.button3:hover,
+.button3:focus {
+    border: 1px solid #f0c9c9;
+    background: #ffd6d6;
+    background: -webkit-gradient(linear, left top, left bottom, from(#ffd6d6), to(#ffb2b2));
+    background: -moz-linear-gradient(top, #ffd6d6, #ffb2b2);
+    background: linear-gradient(to bottom, #ffd6d6, #ffb2b2);
+    color: #001891;
+    text-decoration: none;
+}
+.button3:active {
+    background: #996b6b;
+    background: -webkit-gradient(linear, left top, left bottom, from(#996b6b), to(#ff9494));
+    background: -moz-linear-gradient(top, #996b6b, #ff9494);
+    background: linear-gradient(to bottom, #996b6b, #ff9494);
+}
+.button3:before{
+    content:  "\0000a0";
+    display: inline-block;
+    height: 20px;
+    width: 20px;
+    line-height: 20px;
+    margin: 0 4px -6px -4px;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUAgMAAADw5/WeAAAADFBMVEVUpN47cpuIv+j////WN4xEAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAAMklEQVQImWN4tWrVqtUMDQwMDIzEkfb//wBJ09BYIGnCwAsW+QskWUNDiTPhamhoaDgATK0VHVjI0UwAAAAASUVORK5CYII=") no-repeat left center transparent;
+    background-size: 100% 100%;
+}
+</style>
+</head>
+<body>
+
+
+<script type="text/javascript">
+function divShow(){
+document.getElementById("btnshow").style.display="block";
+document.getElementById("btnhref").innerHTML ="隱藏清單";
+document.getElementById("btnhref").href ="javascript:divhidden()";
+}
+function divhidden(){
+document.getElementById("btnshow").style.display="none";
+document.getElementById("btnhref").innerHTML ="展開清單";
+document.getElementById("btnhref").href ="javascript:divShow()"; 
+}
+</script>
+
+<script type="text/javascript">
+function div_show(){
+document.getElementById("simpleshow").style.display="block";
+document.getElementById("notsimpleshow").style.display="none";
+document.getElementById("simplehref").innerHTML ="不簡化結算";
+document.getElementById("simplehref").href ="javascript:div_hidden()";
+}
+function div_hidden(){
+document.getElementById("simpleshow").style.display="none";
+document.getElementById("notsimpleshow").style.display="block";
+document.getElementById("simplehref").innerHTML ="簡化結算";
+document.getElementById("simplehref").href ="javascript:div_show()"; 
+}
+</script>
+
+<div align="center">
+<ul>
+  <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
+  <li><h1 style="line-height:100px;"><strong>查帳結算</strong></h1></li>
+</ul>
+    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
+    <strong> &nbsp目前帳目</strong>
+    <a href="javascript:divShow();" id="btnhref" class="btn-slide">展開清單</a>
+    </p>
+    <div  style="display: none;" id="btnshow">
+    <table>
+        <thead align="center">
+            <th>編號</th>
+            <th>項目</th>
+            <th>金額</th>
+            <th>代墊/分帳者</th>
+        </thead>
+        <tbody>
+            {% for _data in save_list %}
+                <tr>
+                    <td align="center">{{ _data.number }}</td>
+                    <td>{{ _data.clearMessage }}</td>
+                    <td>{{ _data.withcurr }}</td>
+                    <td>{{ _data.payPeople }}</td>
+                </tr>
+            {% endfor%}
+        </tbody>
+    </table><br/>
+     <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
+    <script>
+        function deleteOption(list){
+            var index=list.selectedIndex;
+            var msg = 'delete';
+            msg=msg+index;
+        if(index>0){        
+            liff.sendMessages([  
+			{ type: 'text',
+			  text: msg
+			},
+		])
+        .then(() => {
+			alert('已刪除該筆資料');
+            window.location.reload();
+			});
+        }
+
+            if (index>0)
+                list.options[index]=null;
+
+            else
+                alert("無資料可以刪除！");
+        }
         
-    dataNumber=len(historySettle_list) 
-    account= np.zeros((person_num,person_num)) 
-    for i in range(dataNumber): 
-        b=dict(historySettle_list[i]) 
-        GroupPeopleString=b['GroupPeople'].split(' ')
-        payAmount = round( int(b['Account']) / (len(GroupPeopleString)-1),2)  #不包含代墊者
-        a1=set(person_list)      #分帳設定有的人 
-        a2=set(GroupPeopleString) 
-        duplicate = list(a1.intersection(a2))         #a1和a2重複的人名 
-        for j in range(len(duplicate)):      #誰付誰錢矩陣 2給1 
-            place1=person_list.index(GroupPeopleString[0]) 
-            place2=person_list.index(duplicate[j]) 
-            account[place1][place2]+=payAmount 
-    result=[]
-    for i in range ( person_num ): #誰付誰錢輸出 
-        for j in range ( person_num ): 
-            payAmount = account[i][j] - account[j][i]
-            if ( payAmount<0 ):
-                result.append(person_list[i]+'付給'+person_list[j] +'NT$' +str(account[i][j]))
-    return result
-
-@app.route('/',methods=['POST','GET'])
-def index():
-    if request.method == 'POST':
-
-        groupId = request.values['groupId']
-        SaveMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
-        data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
-        save_dic = {}
-        save_list = []
-        people_list = []
-        count=0
-        for _Data in data_SaveData:
-            count+=1
-            save_dic['number'] = count
-            firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
-            firstSpace[0]=firstSpace[0]+' / '
-            withoutSpace=firstSpace[0]+firstSpace[1]
-            save_dic['group_num'] = _Data.group_num
-            save_dic['payPeople'] = withoutSpace
-            save_dic['account'] = _Data.account
-            save_dic['message'] = _Data.message
-            if 'USD/' in _Data.message:
-                withoutcurr=_Data.message.strip("USD/")
-                Money='$'+str(_Data.account)
-            elif 'JPY/' in _Data.message:
-                withoutcurr=_Data.message.strip("JPY/")
-                Money='¥'+str(_Data.account)                
-            elif 'EUR/' in _Data.message:
-                withoutcurr=_Data.message.strip("EUR/") 
-                Money='€'+str(_Data.account)          
-            else:
-                withoutcurr=_Data.message
-                Money='NT$'+str(_Data.account)
-            save_dic['clearMessage'] = withoutcurr
-            save_dic['withcurr'] = Money
-            save_list.append(save_dic)
-            save_dic = {}
-
-
-        person_list  = get_groupPeople(groupId,2)
-        numberlist=[]
-        peopleResult=''
-        for i in range(get_groupPeople(groupId,1)):
-            peopleResult+=str(i+1)+'.'+str(person_list[i])+' '
-            numberlist.append(i+1)
-
-        dataNumber=count
-        Zero= np.zeros((dataNumber,get_groupPeople(groupId,1)))
-        for i in range(dataNumber):
-            b=dict(save_list[i])
-            GroupPeopleString=b['group_num'].split(' ')
-            del GroupPeopleString[0]
-
-            #匯率轉換
-            if 'USD' in b['message']:   
-                exchange_rate =  get_exchangeRate(1)
-            elif 'JPY' in b['message']:
-                exchange_rate = get_exchangeRate(2)
-            elif 'EUR' in b['message']:
-                exchange_rate = get_exchangeRate(3)
-            else:
-                exchange_rate = 1
-
-            payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
-            a1=set(get_groupPeople(groupId,2))
-            a2=set(GroupPeopleString)
-            duplicate = list(a1.intersection(a2))
-            count=0
-            for j in range(len(duplicate)):
-                place=get_groupPeople(groupId,2).index(duplicate[count])
-                Zero[i][place]=payAmount
-                count+=1
-
-        replaceZero=Zero
-        totalPayment=replaceZero.sum(axis=0)
-        print(totalPayment)
-        sys.stdout.flush()
-
-        paid= np.zeros((1,len(get_groupPeople(groupId,2))))
+        </script>
         
-        for j in range(len(save_list)):
-            b=dict(save_list[j])
-            GroupPeopleString=b['group_num'].strip(' ').split(' ')
-             #匯率轉換
-            if 'USD' in b['message']:   
-                exchange_rate = get_exchangeRate(1)
-            elif 'JPY' in b['message']:
-                exchange_rate = get_exchangeRate(2)
-            elif 'EUR' in b['message']:
-                exchange_rate = get_exchangeRate(3)
-            else:
-                exchange_rate = 1
-            for i in range(len(get_groupPeople(groupId,2))):
-                if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
-                    paid[0][i]+=exchange_rate*int(b['account'])
-        print(paid)
-        sys.stdout.flush()
-        account=paid-totalPayment
+        <form>
+        <select id=theList size=5>
+            <option value='請選擇'>請選擇</option>
+            {% for _data in save_list %}
+            <option id="{{ _data.number }}" value="{{ _data.number }}">{{ _data.number }} {{ _data.message }} {{ _data.account }}</option>
+            {% endfor %}
 
-        changeArray=np.array(account.flatten())
+        </select>
+        <br/><br/>
+        <input type="button" value="刪除此筆資料" onclick="deleteOption(theList)" class="button2"><br>
+        </form>
+        <br/>
+        <input type="button" name="ok" id="delete" value="刪除所有資料" class=button3><br>
+        <br/>
+    </div>
+    
+    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp代墊與欠款統計</strong></p>
+    <!-- <p>說明：以現在匯率換算</p><br/> -->
+    <p align="left">&nbsp群組分帳人：</p>
+    <p>{{ peopleResult }}</p><br/>
+    <p align="left">&nbsp金額(NTD)
+        <img src="{{ img }}" align="right" >
+    </p>
+    <p>分帳者</p>
+    <p style="font-color: red"><strong>{{warning}}</strong></p>
+    <br/>
+    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
+    <strong>&nbsp結算</strong>
+    <a href="javascript:div_show();" id="simplehref">簡化結算</a>
+    </p>
 
-        #將人和錢結合成tuple，存到一個空串列
-        person_account=[]
-        for i in range(len(person_list)):
-            zip_tuple=(person_list[i],account[0][i])
-            person_account.append(zip_tuple)
-        print(str(person_account))
-        sys.stdout.flush()
+    <div id="notsimpleshow" style="display: block;">
+    {% for list in notsimplify %}
+    <p>{{list}}</p>
+     {% endfor %}
+    </div><br/>
+    <div id="simpleshow" style="display: none;">
+    {% for list in settle %}
+    <p>{{ list }}</p>
+    {% endfor %}
+    </div><br/>
+    <p style="text-align:left;"><strong>Q : 什麼是簡化分帳?</strong></p>
+    <p style="text-align:left;"><strong>A : 簡化分帳能夠自動將群組中的債務結合起來。</strong></p>
+    <p style="text-align:left;">如下圖所示 : </p>
+    <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化分帳，則會顯示鳥A直接將1000元交給C</p>
+<img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
 
-
-
-        #重複執行交換動作
-        result=""
-        for i in range(len(person_list)-1):
-            #排序
-            person_account=sorted(person_account, key = lambda s:s[1])
-
-            #找到最大、最小值
-            min_tuple=person_account[0]
-            max_tuple=person_account[-1]
-            #找到目前代墊最多的人
-            if i==0:
-                maxPerson=max_tuple[0]
-                minPerson=min_tuple[0]
-
-            min=float(min_tuple[1])
-            max=float(max_tuple[1])
-
-            #交換，印出該付的錢
-            if min==0 or max==0:
-                pass
-            elif (min+max)>0:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(min,2)))+'\n'
-                max_tuple=(max_tuple[0],min+max)
-                min_tuple=(min_tuple[0],0)
-            elif (min+max)<0:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
-                min_tuple=(min_tuple[0],min+max)
-                max_tuple=(max_tuple[0],0)
-            else:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
-                min_tuple=(min_tuple[0],0)
-                max_tuple=(max_tuple[0],0)
-            person_account[0]=min_tuple
-            person_account[-1]=max_tuple
-        if SaveMsgNumber>=1:
-            warning=str(maxPerson)+'目前代墊最多!'
-        else:
-            warning=''
-
-        settle = result.split()
-        notsimplify=get_notsimplify()
-
-        plt.rcParams['figure.dpi'] = 200  # 分辨率
-        plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
-        plt.rcParams['savefig.dpi'] = 150  # 圖片像素
-        #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
-        # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
-        # plt.grid(True,color = "#ededed") 
-        axes = plt.gca()
-        axes.yaxis.grid(color = "#ededed")
-        plt.xticks(fontsize=7)
-        plt.yticks(fontsize=4)
-        my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
-        plt.xticks(my_x_ticks)
-        plt.rcParams["font.family"]="SimHei"
-        # plt.xlabel('Person List',fontsize=10)
-        # plt.ylabel('Amount',fontsize=10)
-        colors=[]
-        for _data in changeArray:
-            if _data>0:
-                colors.append('#FFA042')
-            else:
-                colors.append("#FF5151")
-        plt.bar(numberlist,changeArray,width=0.5,color=colors)
-
-        buffer = BytesIO()
-        plt.savefig(buffer)
-        plot_data = buffer.getvalue()
-        # 將matplotlib圖片轉換為HTML
-        imb = base64.b64encode(plot_data)  # 對plot_data進行編碼
-        ims = imb.decode()
-        imd = "data:image/png;base64," + ims
-        img = imd
-        
-        return render_template('index_form.html',**locals())
-
-    return render_template('home.html',**locals())
-
-@app.route('/submit',methods=['POST','GET'])
-def submit():
-    groupId = 0
-
-    return groupId
-
-if __name__ =="__main__":
-    app.run()
+</div>
+<br/>
+</body>
+</html>
 
