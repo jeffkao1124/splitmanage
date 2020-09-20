@@ -97,11 +97,11 @@ def get_notsimplify():
             place2=person_list.index(duplicate[j]) 
             account[place1][place2]+=payAmount 
     result=[]
-    for i in range ( person_num ): #誰付誰錢輸出 
-        for j in range ( person_num ): 
+    for j in range ( person_num ): #誰付誰錢輸出 
+        for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
-            if ( payAmount<0 ):
-                result.append(person_list[i]+'付給'+person_list[j] +'NT$' +str(account[i][j]))
+            if ( payAmount>0 ):
+                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(payAmount))
     return result
 
 @app.route('/',methods=['POST','GET'])
