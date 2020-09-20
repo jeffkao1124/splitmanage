@@ -127,7 +127,7 @@ def get_notsimplify():
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
-                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,1))
+                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2))
     return result
 
 @app.route('/',methods=['POST','GET'])
