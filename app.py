@@ -122,12 +122,12 @@ def get_notsimplify():
             place1=person_list.index(GroupPeopleString[0]) 
             place2=person_list.index(duplicate[j]) 
             account[place1][place2]+=payAmount 
-    result=[]
+    result=''
     for j in range ( person_num ): #誰付誰錢輸出 
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
-                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2))
+                result+=(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2))+'\n'
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -289,6 +289,7 @@ def index():
 
         settle = result.split()
         notsimplify=get_notsimplify()
+        notsimplify = notsimplify.split()
 
         plt.rcParams['figure.dpi'] = 200  # 分辨率
         plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
