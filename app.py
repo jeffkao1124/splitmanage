@@ -81,6 +81,7 @@ def get_notsimplify():
         historySettle_dic = {} 
         historySettle_dic['Account'] = _data.account 
         historySettle_dic['GroupPeople'] =_data.group_num 
+        historySettle_dic['message'] = _data.message
         historySettle_list.append(historySettle_dic) 
         
     dataNumber=len(historySettle_list) 
