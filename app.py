@@ -211,7 +211,7 @@ def index():
 
             for i in range(person_num):  
                 if GroupPeopleString[0] ==  person_list[i]:
-                    account[i] += exchange_rate * int(b['Account'])
+                    account[i] += exchange_rate * int(b['account'])
 
         changeArray=np.array(account.flatten())
 
