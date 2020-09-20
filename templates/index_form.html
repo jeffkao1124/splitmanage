@@ -30,6 +30,7 @@
 	}
     function pushMsg() {
         var msg = '刪除';
+        if (confirm("確認要刪除所有資料？")){
         liff.sendMessages([  //推播訊息
 			{ type: 'text',
 			  text: msg
@@ -39,7 +40,9 @@
 			alert('已刪除所有資料');
             window.location.reload();
 			});
-
+        }else{
+            window.event.returnValue = false;
+        }
 
     }
 
@@ -308,7 +311,7 @@ document.getElementById("simplehref").href ="javascript:div_show()";
             var index=list.selectedIndex;
             var msg = 'delete';
             msg=msg+index;
-        if(index>0){        
+        if(index>0 && confirm("確認要刪除？")){
             liff.sendMessages([  
 			{ type: 'text',
 			  text: msg
@@ -318,15 +321,17 @@ document.getElementById("simplehref").href ="javascript:div_show()";
 			alert('已刪除該筆資料');
             window.location.reload();
 			});
+        }else{
+            window.event.returnValue = false;
         }
 
-            if (index>0)
+            if (index>0){
                 list.options[index]=null;
 
-            else
-                alert("無資料可以刪除！");
+            }else{
+                alert("請選取要刪除的資料！");
         }
-        
+        }
         </script>
         
         <form>
