@@ -263,13 +263,13 @@ document.getElementById("btnhref").href ="javascript:divShow()";
 function div_show(){
 document.getElementById("simpleshow").style.display="block";
 document.getElementById("notsimpleshow").style.display="none";
-document.getElementById("simplehref").innerHTML ="不簡化結算";
+document.getElementById("simplehref").innerHTML ="轉為不簡化結算";
 document.getElementById("simplehref").href ="javascript:div_hidden()";
 }
 function div_hidden(){
 document.getElementById("simpleshow").style.display="none";
 document.getElementById("notsimpleshow").style.display="block";
-document.getElementById("simplehref").innerHTML ="簡化結算";
+document.getElementById("simplehref").innerHTML ="轉為簡化結算";
 document.getElementById("simplehref").href ="javascript:div_show()"; 
 }
 </script>
@@ -408,7 +408,7 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <br/>
     <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
     <strong>&nbsp結算</strong>
-    <a href="javascript:div_show();" id="simplehref">簡化結算</a>
+    <a href="javascript:div_show();" id="simplehref">轉為簡化結算</a>
     </p>
 
     <div id="notsimpleshow" style="display: block;">
@@ -421,12 +421,11 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <p>{{ list }}</p>
     {% endfor %}
     </div><br/>
-    <p style="text-align:left;"><strong>Q : 什麼是簡化分帳?</strong></p>
-    <p style="text-align:left;"><strong>A : 簡化分帳能夠自動將群組中的債務結合起來。</strong></p>
+    <p style="text-align:left;"><strong>Q : 什麼是簡化結算?</strong></p>
+    <p style="text-align:left;"><strong>A : 簡化結算能夠自動將群組中的債務結合起來。</strong></p>
     <p style="text-align:left;">如下圖所示 : </p>
-    <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化分帳，則會顯示鳥A直接將1000元交給C</p>
-<img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
-
+    <img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
+    <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化結算，則會顯示鳥A直接將1000元交給C</p>
 </div>
 <br/>
 </body>
