@@ -355,35 +355,51 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     <p>分帳者</p>
 
 
-  <div style="width: 350px; height: 300px">
-    <canvas id="myChart"></canvas>
+  <div style="width:400px;">
+    <canvas id="myChart" width="1" height="1"></canvas>
   </div>
-  <script>
-    var ctx=$('#myChart');
+
+      <script>
+    var ctx=document.getElementById('myChart').getContext('2d');
     var Account_list = {{ account_list|tojson }};
     var Person_list = {{ person_list|tojson }};
+    //ctx.canvas.parentNode.style.width="300px";
     var myChart=new Chart(ctx, {
       type: 'bar',
       data: {
         labels: Person_list,
         datasets: [{
-          label: '代墊與欠款柱狀圖',
-          data: Account_list,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)'
-          ],
-          borderColor: [
-            'rgba(255,99,132,1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)'
-          ],
-          borderWidth: 1
+           label: '# of Votes',
+           data: Account_list,
+           backgroundColor: [
+             'rgba(255, 99, 132, 0.2)',
+             'rgba(54, 162, 235, 0.2)',
+             'rgba(255, 206, 86, 0.2)',
+             'rgba(75, 192, 192, 0.2)',
+             'rgba(153, 102, 255, 0.2)',
+             'rgba(255, 159, 64, 0.2)'
+             ],
+           borderColor: [
+             'rgba(255, 99, 132, 1)',
+             'rgba(54, 162, 235, 1)',
+             'rgba(255, 206, 86, 1)',
+             'rgba(75, 192, 192, 1)',
+             'rgba(153, 102, 255, 1)',
+             'rgba(255, 159, 64, 1)'
+             ],
+           borderWidth: 1
+           }]
+        },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+            beginAtZero: true
+            }
           }]
         }
-      });
+      }
+    });
   </script>
 
 
