@@ -126,7 +126,7 @@ def get_notsimplify():
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
-                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2)))
+                result.append(person_list[j]+'付給'+person_list[i] +' NT$' +str(round(payAmount,2)))
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -274,15 +274,15 @@ def index():
             if min==0 or max==0:
                 pass
             elif (min+max)>0:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(min,2)))+'\n'
+                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+' NT$'+str(abs(round(min,2)))+'\n'
                 max_tuple=(max_tuple[0],min+max)
                 min_tuple=(min_tuple[0],0)
             elif (min+max)<0:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
+                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+' NT$'+str(abs(round(max,2)))+'\n'
                 min_tuple=(min_tuple[0],min+max)
                 max_tuple=(max_tuple[0],0)
             else:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
+                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+' NT$'+str(abs(round(max,2)))+'\n'
                 min_tuple=(min_tuple[0],0)
                 max_tuple=(max_tuple[0],0)
             person_account[0]=min_tuple
