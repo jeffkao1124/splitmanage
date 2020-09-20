@@ -39,7 +39,6 @@ class usermessage(db.Model):
 
 
 def get_groupPeople(groupId,mode):
-    SetMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set').count()
     data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
     GroupPeopleString=''
     for _data in data_UserData:
@@ -54,33 +53,22 @@ def get_groupPeople(groupId,mode):
     else:
         return 0
 
+#從資料庫取得匯率
 def get_exchangeRate(mode):
     if mode==1:
         data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='USD' ).limit(1).all()
-        history_dic = {}
-        history_list = []
         for _data in data_UserData:
-            history_dic['Mesaage'] = _data.message
-            history_list.append(history_dic)
-        USDrate=eval(history_dic['Mesaage'])
+            USDrate = eval(_data.message)
         return USDrate
     if mode==2:
         data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='JPY' ).limit(1).all()
-        history_dic = {}
-        history_list = []
         for _data in data_UserData:
-            history_dic['Mesaage'] = _data.message
-            history_list.append(history_dic)
-        JPYrate=eval(history_dic['Mesaage'])
+            JPYrate=eval(_data.message)
         return JPYrate
     if mode==3:
         data_UserData = usermessage.query.order_by(usermessage.birth_date.desc()).filter(usermessage.status=='EUR' ).limit(1).all()
-        history_dic = {}
-        history_list = []
         for _data in data_UserData:
-            history_dic['Mesaage'] = _data.message
-            history_list.append(history_dic)
-        EURrate=eval(history_dic['Mesaage'])
+            EURrate=eval(_data.message)
         return EURrate
 
 def get_notsimplify():
@@ -109,10 +97,11 @@ def get_notsimplify():
             place2=person_list.index(duplicate[j]) 
             account[place1][place2]+=payAmount 
     result=[]
-    for i in range ( person_num ): #誰付誰錢輸出 
-        for j in range ( person_num ): 
-            if i!=j and account[i][j] != 0 : 
-                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(account[i][j]))
+    for j in range ( person_num ): #誰付誰錢輸出 
+        for i in range ( person_num ): 
+            payAmount = account[i][j] - account[j][i]
+            if ( payAmount>0 ):
+                result.append(person_list[j]+'付給'+person_list[i] +'NT$' +str(payAmount))
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -120,18 +109,15 @@ def index():
     if request.method == 'POST':
 
         groupId = request.values['groupId']
-        SaveMsgNumber = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save').count()
         data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
-        save_dic = {}
         save_list = []
-        people_list = []
         count=0
         for _Data in data_SaveData:
             count+=1
+            save_dic = {}
             save_dic['number'] = count
             firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
-            firstSpace[0]=firstSpace[0]+' / '
-            withoutSpace=firstSpace[0]+firstSpace[1]
+            withoutSpace= firstSpace[0]+ ' / ' + firstSpace[1]
             save_dic['group_num'] = _Data.group_num
             save_dic['payPeople'] = withoutSpace
             save_dic['account'] = _Data.account
@@ -151,85 +137,93 @@ def index():
             save_dic['clearMessage'] = withoutcurr
             save_dic['withcurr'] = Money
             save_list.append(save_dic)
-            save_dic = {}
-
-
+            
         person_list  = get_groupPeople(groupId,2)
+        person_num = get_groupPeople(groupId,1)
         numberlist=[]
         peopleResult=''
         for i in range(get_groupPeople(groupId,1)):
             peopleResult+=str(i+1)+'.'+str(person_list[i])+' '
             numberlist.append(i+1)
 
-        dataNumber=count
-        Zero= np.zeros((dataNumber,get_groupPeople(groupId,1)))
-        for i in range(dataNumber):
+        account = np.zeros(person_num)
+        exchange_rate_USD = 0
+        exchange_rate_JPY = 0
+        exchange_rate_EUR = 0
+        for i in range(count): #分帳金額
             b=dict(save_list[i])
-            GroupPeopleString=b['group_num'].split(' ')
+            GroupPeopleString=b['group_num'].strip(' ').split(' ')
             del GroupPeopleString[0]
 
-            #匯率轉換
-            if 'USD' in b['message']:   
-                exchange_rate =  get_exchangeRate(1)
+            if  'USD' in b['message']:
+                if exchange_rate_USD:
+                    exchange_rate = exchange_rate_USD
+                else:
+                    exchange_rate_USD = get_exchangeRate(1)
+                    exchange_rate = exchange_rate_USD
             elif 'JPY' in b['message']:
-                exchange_rate = get_exchangeRate(2)
+                if exchange_rate_JPY:
+                    exchange_rate = exchange_rate_JPY
+                else:
+                    exchange_rate_JPY = get_exchangeRate(2)
+                    exchange_rate = exchange_rate_JPY
             elif 'EUR' in b['message']:
-                exchange_rate = get_exchangeRate(3)
+                if exchange_rate_EUR:
+                    exchange_rate = exchange_rate_EUR
+                else:
+                    exchange_rate_EUR = get_exchangeRate(1)
+                    exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
 
             payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
-            a1=set(get_groupPeople(groupId,2))
+            a1=set(person_list)
             a2=set(GroupPeopleString)
             duplicate = list(a1.intersection(a2))
             count=0
             for j in range(len(duplicate)):
-                place=get_groupPeople(groupId,2).index(duplicate[count])
-                Zero[i][place]=payAmount
-                count+=1
-
-        replaceZero=Zero
-        totalPayment=replaceZero.sum(axis=0)
-        print(totalPayment)
-        sys.stdout.flush()
-
-        paid= np.zeros((1,len(get_groupPeople(groupId,2))))
+                place=person_list.index(duplicate[j])
+                account[place] -= payAmount
         
         for j in range(len(save_list)):
             b=dict(save_list[j])
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
-             #匯率轉換
-            if 'USD' in b['message']:   
-                exchange_rate = get_exchangeRate(1)
+            if 'USD' in b['message']:
+                if exchange_rate_USD:
+                    exchange_rate = exchange_rate_USD
+                else:
+                    exchange_rate_USD = get_exchangeRate(1)
+                    exchange_rate = exchange_rate_USD
             elif 'JPY' in b['message']:
-                exchange_rate = get_exchangeRate(2)
+                if exchange_rate_JPY:
+                    exchange_rate = exchange_rate_JPY
+                else:
+                    exchange_rate_JPY = get_exchangeRate(2)
+                    exchange_rate = exchange_rate_JPY
             elif 'EUR' in b['message']:
-                exchange_rate = get_exchangeRate(3)
+                if exchange_rate_EUR:
+                    exchange_rate = exchange_rate_EUR
+                else:
+                    exchange_rate_EUR = get_exchangeRate(1)
+                    exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
-            for i in range(len(get_groupPeople(groupId,2))):
-                if GroupPeopleString[0] == get_groupPeople(groupId,2)[i]:
-                    paid[0][i]+=exchange_rate*int(b['account'])
-        print(paid)
-        sys.stdout.flush()
-        account=paid-totalPayment
+
+            for i in range(person_num):  
+                if GroupPeopleString[0] ==  person_list[i]:
+                    account[i] += exchange_rate * int(b['account'])
 
         changeArray=np.array(account.flatten())
 
         #將人和錢結合成tuple，存到一個空串列
         person_account=[]
-        for i in range(len(person_list)):
-            zip_tuple=(person_list[i],account[0][i])
+        for i in range(person_num):
+            zip_tuple=(person_list[i],account[i])
             person_account.append(zip_tuple)
-        print(str(person_account))
-        sys.stdout.flush()
-
-
 
         #重複執行交換動作
         result=""
-        for i in range(len(person_list)-1):
-            #排序
+        for i in range(person_num-1):  #排序
             person_account=sorted(person_account, key = lambda s:s[1])
 
             #找到最大、最小值
@@ -260,7 +254,7 @@ def index():
                 max_tuple=(max_tuple[0],0)
             person_account[0]=min_tuple
             person_account[-1]=max_tuple
-        if SaveMsgNumber>=1:
+        if count>=1:
             warning=str(maxPerson)+'目前代墊最多!'
         else:
             warning=''
