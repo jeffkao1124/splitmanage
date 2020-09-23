@@ -293,14 +293,14 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     </canvas>
 <script>
     var ctx = document.getElementById("myChart").getContext('2d');
-        var tagMoney = {{ tagMoney|tojson }};
-    var tagCategory = {{ tagCategory|tojson }};
+        var tag_Money = {{ tagMoney|tojson }};
+    var tag_Category = {{ tagCategory|tojson }};
 var myChart = new Chart(ctx, {
     type: 'pie',
     data: {
-        labels:tagCategory,
+        labels:tag_Category,
         datasets: [{            
-            data: tagMoney,
+            data: tag_Money,
             backgroundColor: [
              'rgba(255, 159, 64, 0.7)',
              'rgba(75, 192, 192, 0.7)',
