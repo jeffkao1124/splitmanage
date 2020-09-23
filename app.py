@@ -71,18 +71,18 @@ def get_exchangeRate(mode):
             EURrate=eval(_data.message)
         return EURrate
 
-def strip_tag(_Data.message):
-    if '#餐飲' in _Data.message:
-        withoutcurr=_Data.message.strip("#餐飲")
-    elif "#住宿" in _Data.message:
-        withoutcurr=_Data.message.strip("#住宿")
-    elif "#交通" in _Data.message:
-        withoutcurr=_Data.message.strip("#交通")
-    elif "#行程" in _Data.message:
-        withoutcurr=_Data.message.strip("#行程")
-    else:
-        withoutcurr=_Data.message
-    return withoutcurr
+# def strip_tag(_Data.message):
+#     if '#餐飲' in _Data.message:
+#         withoutcurr=_Data.message.strip("#餐飲")
+#     elif "#住宿" in _Data.message:
+#         withoutcurr=_Data.message.strip("#住宿")
+#     elif "#交通" in _Data.message:
+#         withoutcurr=_Data.message.strip("#交通")
+#     elif "#行程" in _Data.message:
+#         withoutcurr=_Data.message.strip("#行程")
+#     else:
+#         withoutcurr=_Data.message
+#     return withoutcurr
 
 
 def get_notsimplify():
