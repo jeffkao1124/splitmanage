@@ -235,6 +235,7 @@ def index():
         tagTravel=0
         tagOthers=0
         tagMoney=[]
+        tagCategory=[]
         for i in range(count): #分帳金額
             b=dict(save_list[i])
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
@@ -283,12 +284,21 @@ def index():
                 place=person_list.index(duplicate[j])
                 account[place] -= payAmount
         
-        tagMoney.append(tagFood)
-        tagMoney.append(tagHousing)
-        tagMoney.append(tagTrans)
-        tagMoney.append(tagTravel)
-        tagMoney.append(tagOthers)
-        tagCategory=['餐飲',"住宿","交通","行程","不分類"]
+        if tagFood!=0:
+            tagMoney.append(tagFood)
+            tagCategory.append('餐飲')
+        if tagHousing!=0:
+            tagMoney.append(tagHousing)
+            tagCategory.append("住宿")
+        if tagTrans!=0:
+            tagMoney.append(tagTrans)
+            tagCategory.append("交通")
+        if tagTravel!=0:
+            tagMoney.append(tagTravel)
+            tagCategory.append("行程")
+        if tagOthers!=0:
+            tagMoney.append(tagOthers)
+            tagCategory.append("不分類")
 
         for j in range(len(save_list)):
             b=dict(save_list[j])
