@@ -288,8 +288,7 @@ def index():
         tagMoney.append(tagTrans)
         tagMoney.append(tagTravel)
         tagMoney.append(tagOthers)
-        print(tagMoney)
-        sys.stdout.flush()
+        tagCategory=['餐飲',"住宿","交通","行程","不分類"]
 
         for j in range(len(save_list)):
             b=dict(save_list[j])
