@@ -81,11 +81,7 @@ def get_notsimplify():
         historySettle_dic = {} 
         historySettle_dic['Account'] = _data.account 
         historySettle_dic['GroupPeople'] =_data.group_num 
-<<<<<<< HEAD
-        historySettle_dic['message'] = _data.message
-=======
         historySettle_dic['message'] =_data.message
->>>>>>> master
         historySettle_list.append(historySettle_dic) 
         
     dataNumber=len(historySettle_list) 
@@ -96,12 +92,7 @@ def get_notsimplify():
     for i in range(dataNumber): 
         b=dict(historySettle_list[i]) 
         GroupPeopleString=b['GroupPeople'].split(' ')
-<<<<<<< HEAD
-
-        if  'USD' in b['message']:
-=======
         if 'USD' in b['message']:   #匯率轉換
->>>>>>> master
             if exchange_rate_USD:
                 exchange_rate = exchange_rate_USD
             else:
@@ -122,11 +113,7 @@ def get_notsimplify():
         else:
             exchange_rate = 1
 
-<<<<<<< HEAD
-        payAmount =exchange_rate*int(b['Account']) / (len(GroupPeopleString)-1)#不包含代墊者
-=======
         payAmount = exchange_rate * int(b['Account']) / (len(GroupPeopleString)-1)  #不包含代墊者
->>>>>>> master
         a1=set(person_list)      #分帳設定有的人 
         a2=set(GroupPeopleString) 
         duplicate = list(a1.intersection(a2))         #a1和a2重複的人名 
@@ -134,16 +121,12 @@ def get_notsimplify():
             place1=person_list.index(GroupPeopleString[0]) 
             place2=person_list.index(duplicate[j]) 
             account[place1][place2]+=payAmount 
-    result=''
+    result=[]
     for j in range ( person_num ): #誰付誰錢輸出 
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
-<<<<<<< HEAD
-                result+=(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2),2)+'\n'
-=======
                 result.append(person_list[j]+'付給'+person_list[i] +' NT$' +str(round(payAmount,2)))
->>>>>>> master
     return result
 
 @app.route('/',methods=['POST','GET'])
@@ -164,13 +147,13 @@ def index():
             save_dic['payPeople'] = withoutSpace
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
-            if 'USD' in _Data.message:
+            if 'USD/' in _Data.message:
                 withoutcurr=_Data.message.strip("USD/")
                 Money='$'+str(_Data.account)
-            elif 'JPY' in _Data.message:
+            elif 'JPY/' in _Data.message:
                 withoutcurr=_Data.message.strip("JPY/")
                 Money='¥'+str(_Data.account)                
-            elif 'EUR' in _Data.message:
+            elif 'EUR/' in _Data.message:
                 withoutcurr=_Data.message.strip("EUR/") 
                 Money='€'+str(_Data.account)          
             else:
@@ -213,7 +196,7 @@ def index():
                 if exchange_rate_EUR:
                     exchange_rate = exchange_rate_EUR
                 else:
-                    exchange_rate_EUR = get_exchangeRate(3)
+                    exchange_rate_EUR = get_exchangeRate(1)
                     exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
@@ -246,7 +229,7 @@ def index():
                 if exchange_rate_EUR:
                     exchange_rate = exchange_rate_EUR
                 else:
-                    exchange_rate_EUR = get_exchangeRate(3)
+                    exchange_rate_EUR = get_exchangeRate(1)
                     exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
@@ -311,7 +294,6 @@ def index():
 
         settle = result.split()
         notsimplify=get_notsimplify()
-        notsimplify = notsimplify.split()
 
         # plt.rcParams['figure.dpi'] = 200  # 分辨率
         # plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
