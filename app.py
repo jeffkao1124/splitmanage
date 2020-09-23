@@ -71,6 +71,20 @@ def get_exchangeRate(mode):
             EURrate=eval(_data.message)
         return EURrate
 
+def strip_tag(_Data.message):
+    if '#餐飲' in _Data.message:
+        withoutcurr=_Data.message.strip("#餐飲")
+    elif "#住宿" in _Data.message:
+        withoutcurr=_Data.message.strip("#住宿")
+    elif "#交通" in _Data.message:
+        withoutcurr=_Data.message.strip("#交通")
+    elif "#行程" in _Data.message:
+        withoutcurr=_Data.message.strip("#行程")
+    else:
+        withoutcurr=_Data.message
+    return withoutcurr
+
+
 def get_notsimplify():
     groupId = request.values['groupId']
     dataSettle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
@@ -148,16 +162,19 @@ def index():
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
             if 'USD/' in _Data.message:
-                withoutcurr=_Data.message.strip("USD/")
+                withoutcurr=strip_tag(_Data.message)
+                withoutcurr=withoutcurr.strip("USD/")
                 Money='$'+str(_Data.account)
             elif 'JPY/' in _Data.message:
-                withoutcurr=_Data.message.strip("JPY/")
+                withoutcurr=strip_tag(_Data.message)
+                withoutcurr=withoutcurr.strip("JPY/")
                 Money='¥'+str(_Data.account)                
             elif 'EUR/' in _Data.message:
-                withoutcurr=_Data.message.strip("EUR/") 
+                withoutcurr=strip_tag(_Data.message)
+                withoutcurr=withoutcurr.strip("EUR/")
                 Money='€'+str(_Data.account)          
             else:
-                withoutcurr=_Data.message
+                withoutcurr=strip_tag(_Data.message)
                 Money='NT$'+str(_Data.account)
             save_dic['clearMessage'] = withoutcurr
             save_dic['withcurr'] = Money
