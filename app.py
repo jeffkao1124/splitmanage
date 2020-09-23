@@ -162,19 +162,55 @@ def index():
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
             if 'USD/' in _Data.message:
-                withoutcurr=strip_tag(_Data.message)
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
                 withoutcurr=withoutcurr.strip("USD/")
                 Money='$'+str(_Data.account)
             elif 'JPY/' in _Data.message:
-                withoutcurr=strip_tag(_Data.message)
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
                 withoutcurr=withoutcurr.strip("JPY/")
                 Money='¥'+str(_Data.account)                
             elif 'EUR/' in _Data.message:
-                withoutcurr=strip_tag(_Data.message)
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
                 withoutcurr=withoutcurr.strip("EUR/")
                 Money='€'+str(_Data.account)          
             else:
-                withoutcurr=strip_tag(_Data.message)
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
                 Money='NT$'+str(_Data.account)
             save_dic['clearMessage'] = withoutcurr
             save_dic['withcurr'] = Money
