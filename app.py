@@ -81,7 +81,11 @@ def get_notsimplify():
         historySettle_dic = {} 
         historySettle_dic['Account'] = _data.account 
         historySettle_dic['GroupPeople'] =_data.group_num 
+<<<<<<< HEAD
         historySettle_dic['message'] = _data.message
+=======
+        historySettle_dic['message'] =_data.message
+>>>>>>> master
         historySettle_list.append(historySettle_dic) 
         
     dataNumber=len(historySettle_list) 
@@ -92,8 +96,12 @@ def get_notsimplify():
     for i in range(dataNumber): 
         b=dict(historySettle_list[i]) 
         GroupPeopleString=b['GroupPeople'].split(' ')
+<<<<<<< HEAD
 
         if  'USD' in b['message']:
+=======
+        if 'USD' in b['message']:   #匯率轉換
+>>>>>>> master
             if exchange_rate_USD:
                 exchange_rate = exchange_rate_USD
             else:
@@ -114,7 +122,11 @@ def get_notsimplify():
         else:
             exchange_rate = 1
 
+<<<<<<< HEAD
         payAmount =exchange_rate*int(b['Account']) / (len(GroupPeopleString)-1)#不包含代墊者
+=======
+        payAmount = exchange_rate * int(b['Account']) / (len(GroupPeopleString)-1)  #不包含代墊者
+>>>>>>> master
         a1=set(person_list)      #分帳設定有的人 
         a2=set(GroupPeopleString) 
         duplicate = list(a1.intersection(a2))         #a1和a2重複的人名 
@@ -127,7 +139,11 @@ def get_notsimplify():
         for i in range ( person_num ): 
             payAmount = account[i][j] - account[j][i]
             if ( payAmount>0 ):
+<<<<<<< HEAD
                 result+=(person_list[j]+'付給'+person_list[i] +'NT$' +str(round(payAmount,2),2)+'\n'
+=======
+                result.append(person_list[j]+'付給'+person_list[i] +' NT$' +str(round(payAmount,2)))
+>>>>>>> master
     return result
 
 @app.route('/',methods=['POST','GET'])
