@@ -282,12 +282,50 @@ document.getElementById("simplehref").href ="javascript:div_show()";
 <ul>
   <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
   <li><h1 style="line-height:100px;"><strong>查帳結算</strong></h1></li>
+
+<!-- <canvas id="myChart" width="100" height="70">
+    </canvas>
+<script>
+    var ctx = document.getElementById("myChart").getContext('2d');
+        var tag_Money= {{ tagMoney|tojson }};
+    var tag_Category = {{ tagCategory|tojson }};
+var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels:tag_Category,
+        datasets: [{            
+            data: tag_Money,
+            backgroundColor: [
+             'rgba(255, 159, 64, 0.7)',
+             'rgba(75, 192, 192, 0.7)',
+             'rgba(255, 206, 86, 0.7)',
+             'rgba(54, 162, 235, 0.7)',
+             'rgba(153, 102, 255, 0.7)',
+             'rgba(255, 99, 132, 0.7)'
+             ],
+           borderColor: [
+             'rgba(255, 159, 64, 1)',
+             'rgba(75, 192, 192, 1)',
+             'rgba(255, 206, 86, 1)',
+             'rgba(54, 162, 235, 1)',
+             'rgba(153, 102, 255, 1)',
+             'rgba(255, 99, 132, 1)'
+             ],
+            borderWidth: 2
+        }]
+    },
+    options: {}
+});
+</script> -->
+
+
 </ul>
     <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
     <strong> &nbsp目前帳目</strong>
     <a href="javascript:divShow();" id="btnhref" class="btn-slide">展開清單</a>
     </p>
     <div  style="display: none;" id="btnshow">
+
     <table>
         <thead align="center">
             <th>編號</th>
@@ -352,14 +390,6 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     </div>
     
     <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp應收/應付</strong></p>
-    <!-- <p>說明：以現在匯率換算</p><br/> -->
-    <!-- <p align="left">&nbsp群組分帳人：</p>
-    <p>{{ peopleResult }}</p><br/>
-    <p align="left">&nbsp金額(NTD)
-        <img src="{{ img }}" align="right" >
-    </p>
-    <p>分帳者</p> -->
-
 
   <div style="width:350px;">
     <canvas id="myChart" width="1" height="1"></canvas>
@@ -369,7 +399,6 @@ document.getElementById("simplehref").href ="javascript:div_show()";
     var ctx=document.getElementById('myChart').getContext('2d');
     var Account_list = {{ account_list|tojson }};
     var Person_list = {{ person_list|tojson }};
-    //ctx.canvas.parentNode.style.width="300px";
     var myChart=new Chart(ctx, {
       type: 'bar',
       data: {

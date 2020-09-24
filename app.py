@@ -71,6 +71,20 @@ def get_exchangeRate(mode):
             EURrate=eval(_data.message)
         return EURrate
 
+# def strip_tag(_Data.message):
+#     if '#餐飲' in _Data.message:
+#         withoutcurr=_Data.message.strip("#餐飲")
+#     elif "#住宿" in _Data.message:
+#         withoutcurr=_Data.message.strip("#住宿")
+#     elif "#交通" in _Data.message:
+#         withoutcurr=_Data.message.strip("#交通")
+#     elif "#行程" in _Data.message:
+#         withoutcurr=_Data.message.strip("#行程")
+#     else:
+#         withoutcurr=_Data.message
+#     return withoutcurr
+
+
 def get_notsimplify():
     groupId = request.values['groupId']
     dataSettle_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
@@ -148,20 +162,60 @@ def index():
             save_dic['account'] = _Data.account
             save_dic['message'] = _Data.message
             if 'USD/' in _Data.message:
-                withoutcurr=_Data.message.strip("USD/")
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
+                withoutcurr=withoutcurr.strip("USD/")
                 Money='$'+str(_Data.account)
             elif 'JPY/' in _Data.message:
-                withoutcurr=_Data.message.strip("JPY/")
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
+                withoutcurr=withoutcurr.strip("JPY/")
                 Money='¥'+str(_Data.account)                
             elif 'EUR/' in _Data.message:
-                withoutcurr=_Data.message.strip("EUR/") 
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
+                withoutcurr=withoutcurr.strip("EUR/")
                 Money='€'+str(_Data.account)          
             else:
-                withoutcurr=_Data.message
+                if '#餐飲' in _Data.message:
+                    withoutcurr=_Data.message.strip("#餐飲")
+                elif "#住宿" in _Data.message:
+                    withoutcurr=_Data.message.strip("#住宿")
+                elif "#交通" in _Data.message:
+                    withoutcurr=_Data.message.strip("#交通")
+                elif "#行程" in _Data.message:
+                    withoutcurr=_Data.message.strip("#行程")
+                else:
+                    withoutcurr=_Data.message
                 Money='NT$'+str(_Data.account)
             save_dic['clearMessage'] = withoutcurr
             save_dic['withcurr'] = Money
             save_list.append(save_dic)
+
             
         person_list  = get_groupPeople(groupId,2)
         person_num = get_groupPeople(groupId,1)
@@ -175,6 +229,13 @@ def index():
         exchange_rate_USD = 0
         exchange_rate_JPY = 0
         exchange_rate_EUR = 0
+        tagFood=0
+        tagHousing=0
+        tagTrans=0
+        tagTravel=0
+        tagOthers=0
+        tagMoney=[]
+        tagCategory=[]
         for i in range(count): #分帳金額
             b=dict(save_list[i])
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
@@ -201,6 +262,19 @@ def index():
             else:
                 exchange_rate = 1
 
+            tagAmount=exchange_rate*int(b['account'])
+            if  '#餐飲' in b['message']:
+                tagFood+=tagAmount
+            elif  '#住宿' in b['message']:
+                tagHousing+=tagAmount
+            elif  '#交通' in b['message']:
+                tagTrans+=tagAmount
+            elif  '#行程' in b['message']:
+                tagTravel+=tagAmount
+            else:
+                tagOthers+=tagAmount
+
+
             payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
             a1=set(person_list)
             a2=set(GroupPeopleString)
@@ -210,6 +284,22 @@ def index():
                 place=person_list.index(duplicate[j])
                 account[place] -= payAmount
         
+        if tagFood!=0:
+            tagMoney.append(tagFood)
+            tagCategory.append('餐飲')
+        if tagHousing!=0:
+            tagMoney.append(tagHousing)
+            tagCategory.append("住宿")
+        if tagTrans!=0:
+            tagMoney.append(tagTrans)
+            tagCategory.append("交通")
+        if tagTravel!=0:
+            tagMoney.append(tagTravel)
+            tagCategory.append("行程")
+        if tagOthers!=0:
+            tagMoney.append(tagOthers)
+            tagCategory.append("不分類")
+
         for j in range(len(save_list)):
             b=dict(save_list[j])
             GroupPeopleString=b['group_num'].strip(' ').split(' ')
@@ -295,37 +385,6 @@ def index():
         settle = result.split()
         notsimplify=get_notsimplify()
 
-        # plt.rcParams['figure.dpi'] = 200  # 分辨率
-        # plt.figure(facecolor='#FFEEDD',edgecolor='black',figsize=(2.5,1.875))
-        # plt.rcParams['savefig.dpi'] = 150  # 圖片像素
-        #plt.rcParams["font.sans-serif"]= "Microsoft JhengHei"
-        # plt.rcParams['figure.figsize'] = (1.5, 1.0)  # 设置figure_size尺寸800x400
-        # plt.grid(True,color = "#ededed") 
-        # axes = plt.gca()
-        # axes.yaxis.grid(color = "#ededed")
-        # plt.xticks(fontsize=7)
-        # plt.yticks(fontsize=4)
-        # my_x_ticks = np.arange(0, get_groupPeople(groupId,1)+1, 1)
-        # plt.xticks(my_x_ticks)
-        # plt.rcParams["font.family"]="SimHei"
-        # plt.xlabel('Person List',fontsize=10)
-        # plt.ylabel('Amount',fontsize=10)
-        # colors=[]
-        # for _data in changeArray:
-        #     if _data>0:
-        #         colors.append('#FFA042')
-        #     else:
-        #         colors.append("#FF5151")
-        # plt.bar(numberlist,changeArray,width=0.5,color=colors)
-
-        # buffer = BytesIO()
-        # plt.savefig(buffer)
-        # plot_data = buffer.getvalue()
-        # # 將matplotlib圖片轉換為HTML
-        # imb = base64.b64encode(plot_data)  # 對plot_data進行編碼
-        # ims = imb.decode()
-        # imd = "data:image/png;base64," + ims
-        # img = imd
         
         return render_template('index_form.html',**locals())
 
