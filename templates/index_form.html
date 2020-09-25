@@ -282,6 +282,35 @@ document.getElementById("simplehref").href ="javascript:div_show()";
 <ul>
   <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
   <li><h1 style="line-height:100px;"><strong>查帳結算</strong></h1></li>
+      <canvas id="popChart" width="600" height="400"></canvas> 
+    <script>
+var popCanvas = $("#popChart"); 
+var popCanvas = document.getElementById("popChart"); 
+var popCanvas = document.getElementById("popChart").getContext("2d"); 
+var barChart = new Chart(popCanvas, { 
+type: 'bar', 
+data: { 
+labels: ["China", "India", "United States", "Indonesia", "Brazil", "Pakistan", "Nigeria", "Bangladesh", "Russia", "Japan"], 
+datasets: [{ 
+label: 'Population', 
+data: [1379302771, 1281935911, 326625791, 260580739, 207353391, 204924861, 190632261, 157826578, 142257519, 126451398], 
+backgroundColor: [ 
+'rgba(255, 99, 132, 0.6)', 
+'rgba(54, 162, 235, 0.6)', 
+'rgba(255, 206, 86, 0.6)', 
+'rgba(75, 192, 192, 0.6)', 
+'rgba(153, 102, 255, 0.6)', 
+'rgba(255, 159, 64, 0.6)', 
+'rgba(255, 99, 132, 0.6)', 
+'rgba(54, 162, 235, 0.6)', 
+'rgba(255, 206, 86, 0.6)', 
+'rgba(75, 192, 192, 0.6)', 
+'rgba(153, 102, 255, 0.6)' 
+] 
+}] 
+} 
+}); 
+</script>
 
 <!-- <canvas id="myChart" width="100" height="70">
     </canvas>
@@ -458,35 +487,7 @@ var myChart = new Chart(ctx, {
     <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化結算，則會顯示鳥A直接將1000元交給C</p>
 </div>
 <br/>
-    <canvas id="popChart" width="600" height="400"></canvas> 
-    <script>
-var popCanvas = $("#popChart"); 
-var popCanvas = document.getElementById("popChart"); 
-var popCanvas = document.getElementById("popChart").getContext("2d"); 
-var barChart = new Chart(popCanvas, { 
-type: 'bar', 
-data: { 
-labels: ["China", "India", "United States", "Indonesia", "Brazil", "Pakistan", "Nigeria", "Bangladesh", "Russia", "Japan"], 
-datasets: [{ 
-label: 'Population', 
-data: [1379302771, 1281935911, 326625791, 260580739, 207353391, 204924861, 190632261, 157826578, 142257519, 126451398], 
-backgroundColor: [ 
-'rgba(255, 99, 132, 0.6)', 
-'rgba(54, 162, 235, 0.6)', 
-'rgba(255, 206, 86, 0.6)', 
-'rgba(75, 192, 192, 0.6)', 
-'rgba(153, 102, 255, 0.6)', 
-'rgba(255, 159, 64, 0.6)', 
-'rgba(255, 99, 132, 0.6)', 
-'rgba(54, 162, 235, 0.6)', 
-'rgba(255, 206, 86, 0.6)', 
-'rgba(75, 192, 192, 0.6)', 
-'rgba(153, 102, 255, 0.6)' 
-] 
-}] 
-} 
-}); 
-</script>
+
 </body>
 
 </html>
