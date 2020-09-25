@@ -278,6 +278,19 @@ document.getElementById("simplehref").href ="javascript:div_show()";
 }
 </script>
 
+<script type="text/javascript">
+function divSShow(){
+document.getElementById("explainshow").style.display="block";
+document.getElementById("explainhref").innerHTML ="隱藏清單";
+document.getElementById("explainhref").href ="javascript:divhhidden()";
+}
+function divhhidden(){
+document.getElementById("explainshow").style.display="none";
+document.getElementById("explainhref").innerHTML ="展開清單";
+document.getElementById("explainhref").href ="javascript:divSShow()"; 
+}
+</script>
+
 <div align="center">
 <ul>
   <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
@@ -452,11 +465,14 @@ var myChart = new Chart(ctx, {
     <p>{{ list }}</p>
     {% endfor %}
     </div><br/>
+       <a href="javascript:divSShow();" id="explainhref" >展開清單</a>
+    <div style="display: none;" id="explainshow">
     <p style="text-align:left;"><strong>Q : 什麼是簡化結算?</strong></p>
     <p style="text-align:left;"><strong>A : 簡化結算能夠自動將群組中的債務結合起來。</strong></p>
     <p style="text-align:left;">如下圖所示 : </p>
     <img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
     <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化結算，則會顯示鳥A直接將1000元交給C</p>
+    </div>
 </div>
 <br/>
 <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp群組消費統計</strong></p>
