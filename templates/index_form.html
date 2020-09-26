@@ -296,43 +296,6 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
   <li><img src="https://imgur.com/JV8bflw.png" width=100px height=auto align=center></img></li>
   <li><h1 style="line-height:100px;"><strong>查帳結算</strong></h1></li>
 
-
-<!-- <canvas id="myChart" width="100" height="70">
-    </canvas>
-<script>
-    var ctx = document.getElementById("myChart").getContext('2d');
-        var tag_Money= {{ tagMoney|tojson }};
-    var tag_Category = {{ tagCategory|tojson }};
-var myChart = new Chart(ctx, {
-    type: 'pie',
-    data: {
-        labels:tag_Category,
-        datasets: [{            
-            data: tag_Money,
-            backgroundColor: [
-             'rgba(255, 159, 64, 0.7)',
-             'rgba(75, 192, 192, 0.7)',
-             'rgba(255, 206, 86, 0.7)',
-             'rgba(54, 162, 235, 0.7)',
-             'rgba(153, 102, 255, 0.7)',
-             'rgba(255, 99, 132, 0.7)'
-             ],
-           borderColor: [
-             'rgba(255, 159, 64, 1)',
-             'rgba(75, 192, 192, 1)',
-             'rgba(255, 206, 86, 1)',
-             'rgba(54, 162, 235, 1)',
-             'rgba(153, 102, 255, 1)',
-             'rgba(255, 99, 132, 1)'
-             ],
-            borderWidth: 2
-        }]
-    },
-    options: {}
-});
-</script> -->
-
-
 </ul>
     <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
     <strong> &nbsp目前帳目</strong>
@@ -402,7 +365,34 @@ var myChart = new Chart(ctx, {
         <input type="button" name="ok" id="delete" value="刪除所有資料" class=button3><br>
         <br/>
     </div>
-    
+
+    <!-- <p style="font-color: red"><strong>{{warning}}</strong></p> -->
+    <br/>
+    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
+    <strong>&nbsp結算</strong>
+    <a href="javascript:div_show();" id="simplehref">轉為簡化結算</a>
+    </p>
+
+    <div id="notsimpleshow" style="display: block;">
+    {% for list in notsimplify %}
+    <p>{{list}}</p>
+     {% endfor %}
+    </div>
+    <div id="simpleshow" style="display: none;">
+    {% for list in settle %}
+    <p>{{ list }}</p>
+    {% endfor %}
+    </div><br/>
+       <a href="javascript:divSShow();" id="explainhref" style="text-align:left;">Q : 什麼是簡化結算?</a>
+    <div style="display: none;" id="explainshow">
+    <!-- <p style="text-align:left;"><strong>Q : 什麼是簡化結算?</strong></p> -->
+    <p style="text-align:left;"><strong>A : 簡化結算能夠自動將群組中的債務結合起來。</strong></p>
+    <p style="text-align:left;">如下圖所示 : </p>
+    <img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
+    <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化結算，則會顯示鳥A直接將1000元交給C</p>
+    </div>
+</div>
+<br/>
     <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp應收/應付</strong></p>
 
   <div style="width:350px;">
@@ -447,34 +437,6 @@ var myChart = new Chart(ctx, {
   </script>
 
 
-
-    <p style="font-color: red"><strong>{{warning}}</strong></p>
-    <br/>
-    <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;">
-    <strong>&nbsp結算</strong>
-    <a href="javascript:div_show();" id="simplehref">轉為簡化結算</a>
-    </p>
-
-    <div id="notsimpleshow" style="display: block;">
-    {% for list in notsimplify %}
-    <p>{{list}}</p>
-     {% endfor %}
-    </div>
-    <div id="simpleshow" style="display: none;">
-    {% for list in settle %}
-    <p>{{ list }}</p>
-    {% endfor %}
-    </div><br/>
-       <a href="javascript:divSShow();" id="explainhref" style="text-align:left;">Q : 什麼是簡化結算?</a>
-    <div style="display: none;" id="explainshow">
-    <!-- <p style="text-align:left;"><strong>Q : 什麼是簡化結算?</strong></p> -->
-    <p style="text-align:left;"><strong>A : 簡化結算能夠自動將群組中的債務結合起來。</strong></p>
-    <p style="text-align:left;">如下圖所示 : </p>
-    <img src="https://imgur.com/TNJOwwD.png" style="width:240px;height:auto;"></img>
-    <p style="text-align:left;">假設鳥A原本必須先將1000元交給鳥B，鳥B再將1000元交給C；若使用簡化結算，則會顯示鳥A直接將1000元交給C</p>
-    </div>
-</div>
-<br/>
 <p align="left" style="background-color:#fff9c4;font-size:20px;text-align: left;"><strong> &nbsp群組消費統計</strong></p>
       <canvas id="popChart" width="600" height="400"></canvas> 
     <script>
