@@ -389,8 +389,8 @@ def index():
             
             return render_template('index_form.html',**locals())
         except:
-            error=0
-            return error
+            
+            return 'error'
 
     return render_template('home.html',**locals())
 
