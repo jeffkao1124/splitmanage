@@ -390,7 +390,7 @@ def index():
             return render_template('index_form.html',**locals())
         except:
             
-            return 'error'
+            return '操你媽的！你刪到帳目裡的人了，多多算不出來～快點再設定一次人名'
 
     return render_template('home.html',**locals())
 
