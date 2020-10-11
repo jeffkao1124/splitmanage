@@ -156,7 +156,7 @@ def index():
                 count+=1
                 save_dic = {}
                 save_dic['number'] = count
-                firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
+                firstSpace=_Data.group_num.split('%', 1 ) #代墊者/分帳者
                 withoutSpace= firstSpace[0]+ ' / ' + firstSpace[1]
                 save_dic['group_num'] = _Data.group_num
                 save_dic['payPeople'] = withoutSpace
