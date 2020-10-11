@@ -146,247 +146,249 @@ def get_notsimplify():
 @app.route('/',methods=['POST','GET'])
 def index():
     if request.method == 'POST':
+        try:
+            groupId = request.values['groupId']
+            data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
+            save_list = []
+            count=0
+            for _Data in data_SaveData:
+                count+=1
+                save_dic = {}
+                save_dic['number'] = count
+                firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
+                withoutSpace= firstSpace[0]+ ' / ' + firstSpace[1]
+                save_dic['group_num'] = _Data.group_num
+                save_dic['payPeople'] = withoutSpace
+                save_dic['account'] = _Data.account
+                save_dic['message'] = _Data.message
+                if 'USD/' in _Data.message:
+                    if '#餐飲' in _Data.message:
+                        withoutcurr=_Data.message.strip("#餐飲")
+                    elif "#住宿" in _Data.message:
+                        withoutcurr=_Data.message.strip("#住宿")
+                    elif "#交通" in _Data.message:
+                        withoutcurr=_Data.message.strip("#交通")
+                    elif "#行程" in _Data.message:
+                        withoutcurr=_Data.message.strip("#行程")
+                    else:
+                        withoutcurr=_Data.message
+                    withoutcurr=withoutcurr.strip("USD/")
+                    Money='$'+str(_Data.account)
+                elif 'JPY/' in _Data.message:
+                    if '#餐飲' in _Data.message:
+                        withoutcurr=_Data.message.strip("#餐飲")
+                    elif "#住宿" in _Data.message:
+                        withoutcurr=_Data.message.strip("#住宿")
+                    elif "#交通" in _Data.message:
+                        withoutcurr=_Data.message.strip("#交通")
+                    elif "#行程" in _Data.message:
+                        withoutcurr=_Data.message.strip("#行程")
+                    else:
+                        withoutcurr=_Data.message
+                    withoutcurr=withoutcurr.strip("JPY/")
+                    Money='¥'+str(_Data.account)                
+                elif 'EUR/' in _Data.message:
+                    if '#餐飲' in _Data.message:
+                        withoutcurr=_Data.message.strip("#餐飲")
+                    elif "#住宿" in _Data.message:
+                        withoutcurr=_Data.message.strip("#住宿")
+                    elif "#交通" in _Data.message:
+                        withoutcurr=_Data.message.strip("#交通")
+                    elif "#行程" in _Data.message:
+                        withoutcurr=_Data.message.strip("#行程")
+                    else:
+                        withoutcurr=_Data.message
+                    withoutcurr=withoutcurr.strip("EUR/")
+                    Money='€'+str(_Data.account)          
+                else:
+                    if '#餐飲' in _Data.message:
+                        withoutcurr=_Data.message.strip("#餐飲")
+                    elif "#住宿" in _Data.message:
+                        withoutcurr=_Data.message.strip("#住宿")
+                    elif "#交通" in _Data.message:
+                        withoutcurr=_Data.message.strip("#交通")
+                    elif "#行程" in _Data.message:
+                        withoutcurr=_Data.message.strip("#行程")
+                    else:
+                        withoutcurr=_Data.message
+                    Money='NT$'+str(_Data.account)
+                save_dic['clearMessage'] = withoutcurr
+                save_dic['withcurr'] = Money
+                save_list.append(save_dic)
 
-        groupId = request.values['groupId']
-        data_SaveData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='save')
-        save_list = []
-        count=0
-        for _Data in data_SaveData:
-            count+=1
-            save_dic = {}
-            save_dic['number'] = count
-            firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
-            withoutSpace= firstSpace[0]+ ' / ' + firstSpace[1]
-            save_dic['group_num'] = _Data.group_num
-            save_dic['payPeople'] = withoutSpace
-            save_dic['account'] = _Data.account
-            save_dic['message'] = _Data.message
-            if 'USD/' in _Data.message:
-                if '#餐飲' in _Data.message:
-                    withoutcurr=_Data.message.strip("#餐飲")
-                elif "#住宿" in _Data.message:
-                    withoutcurr=_Data.message.strip("#住宿")
-                elif "#交通" in _Data.message:
-                    withoutcurr=_Data.message.strip("#交通")
-                elif "#行程" in _Data.message:
-                    withoutcurr=_Data.message.strip("#行程")
+                
+            person_list  = get_groupPeople(groupId,2)
+            person_num = get_groupPeople(groupId,1)
+            numberlist=[]
+            peopleResult=''
+            for i in range(get_groupPeople(groupId,1)):
+                peopleResult+=str(i+1)+'.'+str(person_list[i])+' '
+                numberlist.append(i+1)
+
+            account = np.zeros(person_num)
+            exchange_rate_USD = 0
+            exchange_rate_JPY = 0
+            exchange_rate_EUR = 0
+            tagFood=0
+            tagHousing=0
+            tagTrans=0
+            tagTravel=0
+            tagOthers=0
+            tagMoney=[]
+            tagCategory=[]
+            for i in range(count): #分帳金額
+                b=dict(save_list[i])
+                GroupPeopleString=b['group_num'].strip(' ').split(' ')
+                del GroupPeopleString[0]
+
+                if  'USD' in b['message']:
+                    if exchange_rate_USD:
+                        exchange_rate = exchange_rate_USD
+                    else:
+                        exchange_rate_USD = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_USD
+                elif 'JPY' in b['message']:
+                    if exchange_rate_JPY:
+                        exchange_rate = exchange_rate_JPY
+                    else:
+                        exchange_rate_JPY = get_exchangeRate(2)
+                        exchange_rate = exchange_rate_JPY
+                elif 'EUR' in b['message']:
+                    if exchange_rate_EUR:
+                        exchange_rate = exchange_rate_EUR
+                    else:
+                        exchange_rate_EUR = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_EUR
                 else:
-                    withoutcurr=_Data.message
-                withoutcurr=withoutcurr.strip("USD/")
-                Money='$'+str(_Data.account)
-            elif 'JPY/' in _Data.message:
-                if '#餐飲' in _Data.message:
-                    withoutcurr=_Data.message.strip("#餐飲")
-                elif "#住宿" in _Data.message:
-                    withoutcurr=_Data.message.strip("#住宿")
-                elif "#交通" in _Data.message:
-                    withoutcurr=_Data.message.strip("#交通")
-                elif "#行程" in _Data.message:
-                    withoutcurr=_Data.message.strip("#行程")
+                    exchange_rate = 1
+
+                tagAmount=exchange_rate*int(b['account'])
+                if  '#餐飲' in b['message']:
+                    tagFood+=tagAmount
+                elif  '#住宿' in b['message']:
+                    tagHousing+=tagAmount
+                elif  '#交通' in b['message']:
+                    tagTrans+=tagAmount
+                elif  '#行程' in b['message']:
+                    tagTravel+=tagAmount
                 else:
-                    withoutcurr=_Data.message
-                withoutcurr=withoutcurr.strip("JPY/")
-                Money='¥'+str(_Data.account)                
-            elif 'EUR/' in _Data.message:
-                if '#餐飲' in _Data.message:
-                    withoutcurr=_Data.message.strip("#餐飲")
-                elif "#住宿" in _Data.message:
-                    withoutcurr=_Data.message.strip("#住宿")
-                elif "#交通" in _Data.message:
-                    withoutcurr=_Data.message.strip("#交通")
-                elif "#行程" in _Data.message:
-                    withoutcurr=_Data.message.strip("#行程")
+                    tagOthers+=tagAmount
+
+
+                payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
+                a1=set(person_list)
+                a2=set(GroupPeopleString)
+                duplicate = list(a1.intersection(a2))
+                count=0
+                for j in range(len(duplicate)):
+                    place=person_list.index(duplicate[j])
+                    account[place] -= payAmount
+            
+            if tagFood!=0:
+                tagMoney.append(tagFood)
+                tagCategory.append('餐飲')
+            if tagHousing!=0:
+                tagMoney.append(tagHousing)
+                tagCategory.append("住宿")
+            if tagTrans!=0:
+                tagMoney.append(tagTrans)
+                tagCategory.append("交通")
+            if tagTravel!=0:
+                tagMoney.append(tagTravel)
+                tagCategory.append("行程")
+            if tagOthers!=0:
+                tagMoney.append(tagOthers)
+                tagCategory.append("不分類")
+
+            for j in range(len(save_list)):
+                b=dict(save_list[j])
+                GroupPeopleString=b['group_num'].strip(' ').split(' ')
+                if 'USD' in b['message']:
+                    if exchange_rate_USD:
+                        exchange_rate = exchange_rate_USD
+                    else:
+                        exchange_rate_USD = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_USD
+                elif 'JPY' in b['message']:
+                    if exchange_rate_JPY:
+                        exchange_rate = exchange_rate_JPY
+                    else:
+                        exchange_rate_JPY = get_exchangeRate(2)
+                        exchange_rate = exchange_rate_JPY
+                elif 'EUR' in b['message']:
+                    if exchange_rate_EUR:
+                        exchange_rate = exchange_rate_EUR
+                    else:
+                        exchange_rate_EUR = get_exchangeRate(1)
+                        exchange_rate = exchange_rate_EUR
                 else:
-                    withoutcurr=_Data.message
-                withoutcurr=withoutcurr.strip("EUR/")
-                Money='€'+str(_Data.account)          
+                    exchange_rate = 1
+
+                for i in range(person_num):  
+                    if GroupPeopleString[0] ==  person_list[i]:
+                        account[i] += exchange_rate * int(b['account'])
+            account_list=list(account)
+            print(account_list)
+            sys.stdout.flush()
+            print(account)
+            sys.stdout.flush()
+            # changeArray=np.array(account.flatten())        
+            changeArray=account
+            print(changeArray)
+            sys.stdout.flush()
+            
+
+            #將人和錢結合成tuple，存到一個空串列
+            person_account=[]
+            for i in range(person_num):
+                zip_tuple=(person_list[i],account[i])
+                person_account.append(zip_tuple)
+
+            #重複執行交換動作
+            result=""
+            for i in range(person_num-1):  #排序
+                person_account=sorted(person_account, key = lambda s:s[1])
+
+                #找到最大、最小值
+                min_tuple=person_account[0]
+                max_tuple=person_account[-1]
+                #找到目前代墊最多的人
+                if i==0:
+                    maxPerson=max_tuple[0]
+                    minPerson=min_tuple[0]
+
+                min=float(min_tuple[1])
+                max=float(max_tuple[1])
+
+                #交換，印出該付的錢
+                if min==0 or max==0:
+                    pass
+                elif (min+max)>0:
+                    result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(min,2)))+'\n'
+                    max_tuple=(max_tuple[0],min+max)
+                    min_tuple=(min_tuple[0],0)
+                elif (min+max)<0:
+                    result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
+                    min_tuple=(min_tuple[0],min+max)
+                    max_tuple=(max_tuple[0],0)
+                else:
+                    result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
+                    min_tuple=(min_tuple[0],0)
+                    max_tuple=(max_tuple[0],0)
+                person_account[0]=min_tuple
+                person_account[-1]=max_tuple
+            if count>=1:
+                warning=str(maxPerson)+'目前代墊最多!'
             else:
-                if '#餐飲' in _Data.message:
-                    withoutcurr=_Data.message.strip("#餐飲")
-                elif "#住宿" in _Data.message:
-                    withoutcurr=_Data.message.strip("#住宿")
-                elif "#交通" in _Data.message:
-                    withoutcurr=_Data.message.strip("#交通")
-                elif "#行程" in _Data.message:
-                    withoutcurr=_Data.message.strip("#行程")
-                else:
-                    withoutcurr=_Data.message
-                Money='NT$'+str(_Data.account)
-            save_dic['clearMessage'] = withoutcurr
-            save_dic['withcurr'] = Money
-            save_list.append(save_dic)
+                warning=''
+
+            settle = result.split()
+            notsimplify=get_notsimplify()
 
             
-        person_list  = get_groupPeople(groupId,2)
-        person_num = get_groupPeople(groupId,1)
-        numberlist=[]
-        peopleResult=''
-        for i in range(get_groupPeople(groupId,1)):
-            peopleResult+=str(i+1)+'.'+str(person_list[i])+' '
-            numberlist.append(i+1)
-
-        account = np.zeros(person_num)
-        exchange_rate_USD = 0
-        exchange_rate_JPY = 0
-        exchange_rate_EUR = 0
-        tagFood=0
-        tagHousing=0
-        tagTrans=0
-        tagTravel=0
-        tagOthers=0
-        tagMoney=[]
-        tagCategory=[]
-        for i in range(count): #分帳金額
-            b=dict(save_list[i])
-            GroupPeopleString=b['group_num'].strip(' ').split(' ')
-            del GroupPeopleString[0]
-
-            if  'USD' in b['message']:
-                if exchange_rate_USD:
-                    exchange_rate = exchange_rate_USD
-                else:
-                    exchange_rate_USD = get_exchangeRate(1)
-                    exchange_rate = exchange_rate_USD
-            elif 'JPY' in b['message']:
-                if exchange_rate_JPY:
-                    exchange_rate = exchange_rate_JPY
-                else:
-                    exchange_rate_JPY = get_exchangeRate(2)
-                    exchange_rate = exchange_rate_JPY
-            elif 'EUR' in b['message']:
-                if exchange_rate_EUR:
-                    exchange_rate = exchange_rate_EUR
-                else:
-                    exchange_rate_EUR = get_exchangeRate(1)
-                    exchange_rate = exchange_rate_EUR
-            else:
-                exchange_rate = 1
-
-            tagAmount=exchange_rate*int(b['account'])
-            if  '#餐飲' in b['message']:
-                tagFood+=tagAmount
-            elif  '#住宿' in b['message']:
-                tagHousing+=tagAmount
-            elif  '#交通' in b['message']:
-                tagTrans+=tagAmount
-            elif  '#行程' in b['message']:
-                tagTravel+=tagAmount
-            else:
-                tagOthers+=tagAmount
-
-
-            payAmount=exchange_rate*int(b['account'])/len(GroupPeopleString)
-            a1=set(person_list)
-            a2=set(GroupPeopleString)
-            duplicate = list(a1.intersection(a2))
-            count=0
-            for j in range(len(duplicate)):
-                place=person_list.index(duplicate[j])
-                account[place] -= payAmount
-        
-        if tagFood!=0:
-            tagMoney.append(tagFood)
-            tagCategory.append('餐飲')
-        if tagHousing!=0:
-            tagMoney.append(tagHousing)
-            tagCategory.append("住宿")
-        if tagTrans!=0:
-            tagMoney.append(tagTrans)
-            tagCategory.append("交通")
-        if tagTravel!=0:
-            tagMoney.append(tagTravel)
-            tagCategory.append("行程")
-        if tagOthers!=0:
-            tagMoney.append(tagOthers)
-            tagCategory.append("不分類")
-
-        for j in range(len(save_list)):
-            b=dict(save_list[j])
-            GroupPeopleString=b['group_num'].strip(' ').split(' ')
-            if 'USD' in b['message']:
-                if exchange_rate_USD:
-                    exchange_rate = exchange_rate_USD
-                else:
-                    exchange_rate_USD = get_exchangeRate(1)
-                    exchange_rate = exchange_rate_USD
-            elif 'JPY' in b['message']:
-                if exchange_rate_JPY:
-                    exchange_rate = exchange_rate_JPY
-                else:
-                    exchange_rate_JPY = get_exchangeRate(2)
-                    exchange_rate = exchange_rate_JPY
-            elif 'EUR' in b['message']:
-                if exchange_rate_EUR:
-                    exchange_rate = exchange_rate_EUR
-                else:
-                    exchange_rate_EUR = get_exchangeRate(1)
-                    exchange_rate = exchange_rate_EUR
-            else:
-                exchange_rate = 1
-
-            for i in range(person_num):  
-                if GroupPeopleString[0] ==  person_list[i]:
-                    account[i] += exchange_rate * int(b['account'])
-        account_list=list(account)
-        print(account_list)
-        sys.stdout.flush()
-        print(account)
-        sys.stdout.flush()
-        # changeArray=np.array(account.flatten())        
-        changeArray=account
-        print(changeArray)
-        sys.stdout.flush()
-        
-
-        #將人和錢結合成tuple，存到一個空串列
-        person_account=[]
-        for i in range(person_num):
-            zip_tuple=(person_list[i],account[i])
-            person_account.append(zip_tuple)
-
-        #重複執行交換動作
-        result=""
-        for i in range(person_num-1):  #排序
-            person_account=sorted(person_account, key = lambda s:s[1])
-
-            #找到最大、最小值
-            min_tuple=person_account[0]
-            max_tuple=person_account[-1]
-            #找到目前代墊最多的人
-            if i==0:
-                maxPerson=max_tuple[0]
-                minPerson=min_tuple[0]
-
-            min=float(min_tuple[1])
-            max=float(max_tuple[1])
-
-            #交換，印出該付的錢
-            if min==0 or max==0:
-                pass
-            elif (min+max)>0:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(min,2)))+'\n'
-                max_tuple=(max_tuple[0],min+max)
-                min_tuple=(min_tuple[0],0)
-            elif (min+max)<0:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
-                min_tuple=(min_tuple[0],min+max)
-                max_tuple=(max_tuple[0],0)
-            else:
-                result=result+str(min_tuple[0])+'付給'+str(max_tuple[0])+'NT$'+str(abs(round(max,2)))+'\n'
-                min_tuple=(min_tuple[0],0)
-                max_tuple=(max_tuple[0],0)
-            person_account[0]=min_tuple
-            person_account[-1]=max_tuple
-        if count>=1:
-            warning=str(maxPerson)+'目前代墊最多!'
-        else:
-            warning=''
-
-        settle = result.split()
-        notsimplify=get_notsimplify()
-
-        
-        return render_template('index_form.html',**locals())
+            return render_template('index_form.html',**locals())
+        except:
+            return '1.請檢查帳目和設定分帳者的人名是否一致  2.請檢查項目是否有多打空格'
 
     return render_template('home.html',**locals())
 
