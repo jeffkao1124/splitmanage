@@ -42,8 +42,8 @@ def get_groupPeople(groupId,mode):
     data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
     GroupPeopleString=''
     for _data in data_UserData:
-        GroupPeopleString += _data.nickname +' '
-    new_list = GroupPeopleString.strip('  ').split(' ')
+        GroupPeopleString += _data.nickname +'%'
+    new_list = GroupPeopleString.strip('%').split('%')
     new_list=list(set(new_list)) #刪除重複
 
     if mode==1:
@@ -239,7 +239,7 @@ def index():
             tagCategory=[]
             for i in range(count): #分帳金額
                 b=dict(save_list[i])
-                GroupPeopleString=b['group_num'].strip(' ').split(' ')
+                GroupPeopleString=b['group_num'].strip('%').split('%')
                 del GroupPeopleString[0]
 
                 if  'USD' in b['message']:
@@ -303,7 +303,7 @@ def index():
 
             for j in range(len(save_list)):
                 b=dict(save_list[j])
-                GroupPeopleString=b['group_num'].strip(' ').split(' ')
+                GroupPeopleString=b['group_num'].strip('%').split('%')
                 if 'USD' in b['message']:
                     if exchange_rate_USD:
                         exchange_rate = exchange_rate_USD
