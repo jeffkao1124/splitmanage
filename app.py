@@ -42,8 +42,8 @@ def get_groupPeople(groupId,mode):
     data_UserData = usermessage.query.order_by(usermessage.birth_date).filter(usermessage.group_id==groupId).filter(usermessage.status=='set')
     GroupPeopleString=''
     for _data in data_UserData:
-        GroupPeopleString += _data.nickname +'%'
-    new_list = GroupPeopleString.strip('%').split('%')
+        GroupPeopleString += _data.nickname +' '
+    new_list = GroupPeopleString.strip('  ').split(' ')
     new_list=list(set(new_list)) #刪除重複
 
     if mode==1:
@@ -105,7 +105,7 @@ def get_notsimplify():
     exchange_rate_EUR = 0
     for i in range(dataNumber): 
         b=dict(historySettle_list[i]) 
-        GroupPeopleString=b['GroupPeople'].strip('%').split('%')
+        GroupPeopleString=b['GroupPeople'].split(' ')
         if 'USD' in b['message']:   #匯率轉換
             if exchange_rate_USD:
                 exchange_rate = exchange_rate_USD
@@ -156,7 +156,7 @@ def index():
                 count+=1
                 save_dic = {}
                 save_dic['number'] = count
-                firstSpace=_Data.group_num.strip('%')split('%', 1 ) #代墊者/分帳者
+                firstSpace=_Data.group_num.split(' ', 1 ) #代墊者/分帳者
                 withoutSpace= firstSpace[0]+ ' / ' + firstSpace[1]
                 save_dic['group_num'] = _Data.group_num
                 save_dic['payPeople'] = withoutSpace
@@ -239,7 +239,7 @@ def index():
             tagCategory=[]
             for i in range(count): #分帳金額
                 b=dict(save_list[i])
-                GroupPeopleString=b['group_num'].strip('%').split('%')
+                GroupPeopleString=b['group_num'].strip(' ').split(' ')
                 del GroupPeopleString[0]
 
                 if  'USD' in b['message']:
@@ -303,7 +303,7 @@ def index():
 
             for j in range(len(save_list)):
                 b=dict(save_list[j])
-                GroupPeopleString=b['group_num'].split('%')
+                GroupPeopleString=b['group_num'].strip(' ').split(' ')
                 if 'USD' in b['message']:
                     if exchange_rate_USD:
                         exchange_rate = exchange_rate_USD
@@ -390,7 +390,7 @@ def index():
             return render_template('index_form.html',**locals())
         except:
             
-            return '目前維修中，若有問題請私訊粉專 ! '
+            return '1.請檢查帳目和設定分帳者的人名是否一致  2.請檢查項目是否有多打空格'
 
     return render_template('home.html',**locals())
 
