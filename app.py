@@ -105,7 +105,7 @@ def get_notsimplify():
     exchange_rate_EUR = 0
     for i in range(dataNumber): 
         b=dict(historySettle_list[i]) 
-        GroupPeopleString=b['GroupPeople'].split(' ')
+        GroupPeopleString=b['GroupPeople'].split('%')
         if 'USD' in b['message']:   #匯率轉換
             if exchange_rate_USD:
                 exchange_rate = exchange_rate_USD
