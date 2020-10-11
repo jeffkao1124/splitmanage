@@ -202,7 +202,7 @@ def index():
                 Money='€'+str(_Data.account)          
             else:
                 if '#餐飲' in _Data.message:
-                    withoutcurr=_Data.message.strip("#餐飲")
+                    withoutcurr=_Data.message[:-3]
                 elif "#住宿" in _Data.message:
                     withoutcurr=_Data.message.strip("#住宿")
                 elif "#交通" in _Data.message:
