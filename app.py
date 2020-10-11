@@ -390,7 +390,7 @@ def index():
             return render_template('index_form.html',**locals())
         except:
             
-            return '1.請檢查帳目和設定分帳者的人名是否一致  2.請檢查項目和金額中間是否有多打空格'
+            return '目前維修中，若有問題請私訊粉專 ! '
 
     return render_template('home.html',**locals())
 
