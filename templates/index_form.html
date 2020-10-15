@@ -310,10 +310,9 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
             {% for _data in save_list %}
                 <tr>
                     <td align="center">{{ _data.number }}</td>
-                    <td>{{ _data.clearMessage }}</td>
+                    <td><button>{{ _data.clearMessage }}</button></td>
                     <td>{{ _data.withcurr }}</td>
                     <td>{{ _data.payPeople }}</td>
-                    <td><button>詳細</button></td>
                 </tr>
             {% endfor%}
         </tbody>
