@@ -299,6 +299,12 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
     </p>
     <div  style="display: none;" id="btnshow">
 
+ <script type="text/javascript">
+  function myFun(){
+      var inf=document.getElementById('detail').value;
+   alert(inf);
+  }
+ </script>
     <table>
         <thead align="center">
             <th>編號</th>
@@ -310,7 +316,7 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
             {% for _data in save_list %}
                 <tr>
                     <td align="center">{{ _data.number }}</td>
-                    <td>{{ _data.clearMessage }}</td>
+                    <td type="button"  id="detail" value='{{ _data.clearMessage }} ' onClick="window.open('settle_form.html','test','menubar=no, ....)">>{{ _data.clearMessage }}</td>
                     <td>{{ _data.withcurr }}</td>
                     <td>{{ _data.payPeople }}</td>
                 </tr>
