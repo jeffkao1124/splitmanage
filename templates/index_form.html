@@ -316,7 +316,7 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
             {% for _data in save_list %}
                 <tr>
                     <td align="center">{{ _data.number }}</td>
-                    <td type="button"  id="detail" value='{{ _data.clearMessage }} ' onClick="window.open('settle_form.html','test','menubar=no, ....)">>{{ _data.clearMessage }}</td>
+                    <td type="button"  id="detail" value='{{ _data.clearMessage }} ' onClick="alert("Test")">>{{ _data.clearMessage }}</td>
                     <td>{{ _data.withcurr }}</td>
                     <td>{{ _data.payPeople }}</td>
                 </tr>
