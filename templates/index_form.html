@@ -299,12 +299,6 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
     </p>
     <div  style="display: none;" id="btnshow">
 
- <script type="text/javascript">
-  function myFun(){
-      var test=document.getElementById('detail').value;
-   alert(test);
-  }
- </script>
     <table>
         <thead align="center">
             <th>編號</th>
@@ -323,6 +317,12 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
             {% endfor%}
         </tbody>
     </table><br/>
+     <script type="text/javascript">
+  function myFun(){
+      var test=document.getElementById('detail').value;
+   alert(test);
+  }
+ </script>
      <p class="text-background" align="left" style="font-size:18px;"><strong>&nbsp編輯：</strong></p>
     <script>
         function deleteOption(list){
