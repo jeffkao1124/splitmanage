@@ -299,6 +299,11 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
     </p>
     <div  style="display: none;" id="btnshow">
 
+ <script type="text/javascript">
+  function myFun(){
+   alert("Button Test" + "<br>");
+  }
+ </script>
     <table>
         <thead align="center">
             <th>編號</th>
@@ -310,7 +315,7 @@ document.getElementById("explainhref").href ="javascript:divSShow()";
             {% for _data in save_list %}
                 <tr>
                     <td align="center">{{ _data.number }}</td>
-                    <td><button>{{ _data.clearMessage }}</button></td>
+                    <td type="button"  value={{ _data.clearMessage }} onClick="myFun()">{{ _data.clearMessage }}</td>
                     <td>{{ _data.withcurr }}</td>
                     <td>{{ _data.payPeople }}</td>
                 </tr>
