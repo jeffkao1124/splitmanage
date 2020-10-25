@@ -134,6 +134,9 @@ def get_notsimplify():
         for j in range(len(duplicate)):      #誰付誰錢矩陣 2給1 
             place1=person_list.index(GroupPeopleString[0]) 
             place2=person_list.index(duplicate[j]) 
+            payAmount_place = GroupPeopleString.index(duplicate[j]) +1  #多種分帳金額 - 金額位置
+            if ( payAmount_place < len(GroupPeopleString) and GroupPeopleString[payAmount_place].isdigit() ):
+                payAmount = exchange_rate*int(GroupPeopleString[payAmount_place])           
             account[place1][place2]+=payAmount 
     result=[]
     for j in range ( person_num ): #誰付誰錢輸出 
