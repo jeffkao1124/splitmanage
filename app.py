@@ -282,6 +282,9 @@ def index():
             count=0
             for j in range(len(duplicate)):
                 place=person_list.index(duplicate[j])
+                payAmount_place = GroupPeopleString.index(duplicate[j]) +1  #多種分帳金額 - 金額位置 
+                if ( payAmount_place < len(GroupPeopleString) and GroupPeopleString[payAmount_place].isdigit() ): 
+                    payAmount = exchange_rate*int(GroupPeopleString[payAmount_place])                   
                 account[place] -= payAmount
         
         if tagFood!=0:
