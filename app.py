@@ -260,7 +260,7 @@ def index():
                 if exchange_rate_EUR:
                     exchange_rate = exchange_rate_EUR
                 else:
-                    exchange_rate_EUR = get_exchangeRate(1)
+                    exchange_rate_EUR = get_exchangeRate(3)
                     exchange_rate = exchange_rate_EUR
             else:
                 exchange_rate = 1
