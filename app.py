@@ -52,7 +52,7 @@ def get_groupPeople(groupId,mode):
         return new_list
     else:
         return 0
-
+#
 #從資料庫取得匯率
 def get_exchangeRate(mode):
     if mode==1:
